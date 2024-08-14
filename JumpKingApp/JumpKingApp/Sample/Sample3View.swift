@@ -15,10 +15,12 @@ struct Sample3View: View {
     @State private var isWait:Bool = false
     @State private var isPaused: Bool = false
     @State private var timer: Timer?
+    @State private var isPresented: Bool = false
     
     var body: some View {
         Button(action: {
             isPaused.toggle()
+            isPresented = true
         }) {
             Rectangle()
                 .fill(isPaused ? .green : .red)
@@ -76,8 +78,10 @@ struct Sample3View: View {
             .frame(width:50)
             .padding()
         }.disabled(isWait)
+            .fullScreenCover(isPresented: $isPresented) {
+            SampleView()
+        }
     }
-    
     
     private func rest() {
         rectangles.removeAll()
