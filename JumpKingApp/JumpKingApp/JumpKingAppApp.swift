@@ -11,7 +11,7 @@ import SwiftUI
 struct JumpKingAppApp: App {
     var body: some Scene {
         WindowGroup {
-            Sample3View()
+            GameView()
         }
     }
 }

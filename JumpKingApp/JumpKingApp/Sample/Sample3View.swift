@@ -18,6 +18,7 @@ struct Sample3View: View {
     @State private var isPresented: Bool = false
     
     var body: some View {
+        
         Button(action: {
             isPaused.toggle()
             isPresented = true
@@ -31,21 +32,8 @@ struct Sample3View: View {
         HStack {
             ZStack {
                 
-                //                if isNice {
-                //                    Text(gameMessage)
-                //                        .offset(y:-200)
-                //                }
-                
                 Image("dog")
                     .position(x:120,y:Ypos)
-                
-                ////                判定テスト
-                //                Image("dog")
-                //                    .position(x:120,y:375)
-                //                Rectangle()
-                //                    .fill(Color.random)
-                //                    .frame(width:50,height:50)
-                //                    .position(x:170,y:475)
                 
                 ForEach(rectangles,id: \.self) { newPos in
                     Rectangle()
@@ -78,9 +66,6 @@ struct Sample3View: View {
             .frame(width:50)
             .padding()
         }.disabled(isWait)
-            .fullScreenCover(isPresented: $isPresented) {
-            SampleView()
-        }
     }
     
     private func rest() {
@@ -120,35 +105,6 @@ struct Sample3View: View {
             }
         }
     }
-    
-    //    private func togglePause() {
-    //        isPaused.toggle()
-    //        if isPaused {
-    //            timer?.invalidate()  // 停止计时器
-    //        } else {
-    //            startTimer()  // 重新启动计时器
-    //        }
-    //    }
-    //    private func startTimer() {
-    //        timer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { _ in
-    //            if !isPaused {
-    //                rest()
-    //                createRectangle()
-    //                Move()
-    //            }
-    //        }
-    //    }
-    
-    //    private func result() -> String {
-    //        if Xpos <= 170 {
-    //            if Ypos <= 425 {
-    //                return "Nice"
-    //            } else {
-    //                return "GameOver"
-    //            }
-    //        }
-    //        return "Continue"
-    //    }
 }
 
 extension Color {
