@@ -11,7 +11,6 @@
 		7F44111E2C6A5ED200E82C3D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F44111D2C6A5ED200E82C3D /* ContentView.swift */; };
 		7F4411202C6A5ED500E82C3D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7F44111F2C6A5ED500E82C3D /* Assets.xcassets */; };
 		7F4411232C6A5ED500E82C3D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7F4411222C6A5ED500E82C3D /* Preview Assets.xcassets */; };
-		7FF02EB22C74894C0032AF94 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF02EB12C74894C0032AF94 /* StartView.swift */; };
 		7FF02EB42C74AE170032AF94 /* GameTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF02EB32C74AE170032AF94 /* GameTime.swift */; };
 /* End PBXBuildFile section */
 
@@ -21,7 +20,6 @@
 		7F44111D2C6A5ED200E82C3D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7F44111F2C6A5ED500E82C3D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7F4411222C6A5ED500E82C3D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		7FF02EB12C74894C0032AF94 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
 		7FF02EB32C74AE170032AF94 /* GameTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTime.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -58,7 +56,6 @@
 				7F44111B2C6A5ED200E82C3D /* JumpKingAppApp.swift */,
 				7F44111D2C6A5ED200E82C3D /* ContentView.swift */,
 				7FF02EB32C74AE170032AF94 /* GameTime.swift */,
-				7FF02EB02C74891B0032AF94 /* UI */,
 				7F44111F2C6A5ED500E82C3D /* Assets.xcassets */,
 				7F4411212C6A5ED500E82C3D /* Preview Content */,
 			);
@@ -71,14 +68,6 @@
 				7F4411222C6A5ED500E82C3D /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		7FF02EB02C74891B0032AF94 /* UI */ = {
-			isa = PBXGroup;
-			children = (
-				7FF02EB12C74894C0032AF94 /* StartView.swift */,
-			);
-			path = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -151,7 +140,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7FF02EB22C74894C0032AF94 /* StartView.swift in Sources */,
 				7F44111E2C6A5ED200E82C3D /* ContentView.swift in Sources */,
 				7FF02EB42C74AE170032AF94 /* GameTime.swift in Sources */,
 				7F44111C2C6A5ED200E82C3D /* JumpKingAppApp.swift in Sources */,
