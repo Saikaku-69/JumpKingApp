@@ -60,14 +60,13 @@ struct ContentView: View {
                                 isStop = false
                                 isOn = false
                             }) {
-                                Text("開始")
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal)
+//                                Text("開始")
+//                                    .foregroundColor(.white)
+//                                    .padding(.horizontal)
+                                Image("startButton")
                             }
-                            .background(.brown)
-                            .cornerRadius(15)
                         }
-                    }.frame(height:30)
+                    }.frame(height:50)
                 }
             }
             .frame(height:200)
@@ -110,11 +109,16 @@ struct ContentView: View {
                     .position(x:rectanglePotionX, y: rectanglePotionY)
                 }
                 
-                Rectangle()
-                    .fill(.red)
-                    .opacity(0.3)
-                    .frame(width:5,height: 30)
-                    .position(x:300, y: 300)
+//                Rectangle()
+//                    .fill(.red)
+//                    .opacity(0.3)
+//                    .frame(width:5,height: 30)
+//                    .position(x:300, y: 300)
+                Image("sword")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width:40)
+                    .position(x:335, y: 280)
                 ZStack {
                     Rectangle()
                         .fill(.gray)
@@ -156,10 +160,14 @@ struct ContentView: View {
                         isStop = false
                     }
                 }) {
-                    Circle()
-                        .fill(.gray)
-                        .opacity(0.2)
-                        .frame(width:80)
+//                    Circle()
+//                        .fill(.gray)
+//                        .opacity(0.2)
+//                        .frame(width:80)
+                    Image("jumpButton")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width:50)
                 }
                 .padding(.top)
                 .disabled(isStop)
@@ -274,9 +282,10 @@ struct ContentView: View {
     }
     
     private func gameResult() {
-        if count <= -500 || dogPositionX >= 300 {
+        if count <= -1000 || dogPositionX >= 300 || gameTime.playTime == 0 {
             isResult = true
             stopTimer()
+            gameTime.tok()
         }
     }
     
@@ -284,6 +293,9 @@ struct ContentView: View {
         count = 0
         dogPositionX = 100
         rectanglePotionX = 440
+        isOn = true
+        gameTime.tok()
+        gameTime.playTime = 60
         rectangles.removeAll()
     }
 }

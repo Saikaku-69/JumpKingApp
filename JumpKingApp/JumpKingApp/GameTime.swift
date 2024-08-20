@@ -20,4 +20,8 @@ class GameTime: ObservableObject {
             }
         }
     }
+    
+    func tok() {
+        playTimer?.invalidate()
+    }
 }

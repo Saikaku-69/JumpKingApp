@@ -12,6 +12,7 @@
 		7F4411202C6A5ED500E82C3D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7F44111F2C6A5ED500E82C3D /* Assets.xcassets */; };
 		7F4411232C6A5ED500E82C3D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7F4411222C6A5ED500E82C3D /* Preview Assets.xcassets */; };
 		7FF02EB42C74AE170032AF94 /* GameTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF02EB32C74AE170032AF94 /* GameTime.swift */; };
+		7FF02EB72C74C5F10032AF94 /* FrontView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF02EB62C74C5F10032AF94 /* FrontView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +22,7 @@
 		7F44111F2C6A5ED500E82C3D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7F4411222C6A5ED500E82C3D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		7FF02EB32C74AE170032AF94 /* GameTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTime.swift; sourceTree = "<group>"; };
+		7FF02EB62C74C5F10032AF94 /* FrontView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 				7F44111B2C6A5ED200E82C3D /* JumpKingAppApp.swift */,
 				7F44111D2C6A5ED200E82C3D /* ContentView.swift */,
 				7FF02EB32C74AE170032AF94 /* GameTime.swift */,
+				7FF02EB52C74C5D70032AF94 /* FrontView */,
 				7F44111F2C6A5ED500E82C3D /* Assets.xcassets */,
 				7F4411212C6A5ED500E82C3D /* Preview Content */,
 			);
@@ -68,6 +71,14 @@
 				7F4411222C6A5ED500E82C3D /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		7FF02EB52C74C5D70032AF94 /* FrontView */ = {
+			isa = PBXGroup;
+			children = (
+				7FF02EB62C74C5F10032AF94 /* FrontView.swift */,
+			);
+			path = FrontView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -142,6 +153,7 @@
 			files = (
 				7F44111E2C6A5ED200E82C3D /* ContentView.swift in Sources */,
 				7FF02EB42C74AE170032AF94 /* GameTime.swift in Sources */,
+				7FF02EB72C74C5F10032AF94 /* FrontView.swift in Sources */,
 				7F44111C2C6A5ED200E82C3D /* JumpKingAppApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
