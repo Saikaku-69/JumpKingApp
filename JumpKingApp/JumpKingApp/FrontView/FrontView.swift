@@ -30,6 +30,11 @@ struct FrontView: View {
                     .frame(width:130)
             }
             .disabled(isWait)
+            
+            Image("menuButton")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width:130)
         }
         .fullScreenCover(isPresented: $isPlay) {
             ContentView()
@@ -60,45 +65,21 @@ struct FrontView: View {
         }.frame(width:200,height:100)
     }
     
-    //    private func roketMoveX() {
-    //
-    //        withAnimation(.linear(duration: 0.01)) {
-    //            roketPosition.x -= 10
-    //        }
-    //
-    //        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-    //            withAnimation(.linear(duration: 0.02)) {
-    //                roketPosition.x += 20
-    //            }
-    //        }
-    //
-    //        DispatchQueue.main.asyncAfter(deadline: .now() + 0.03) {
-    //            withAnimation(.linear(duration: 0.02)) {
-    //                roketPosition.x -= 20
-    //            }
-    //        }
-    //
-    //        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-    //            withAnimation(.linear(duration: 0.01)) {
-    //                roketPosition.x += 10
-    //            }
-    //        }
-    //    }
-    
     private func roketMoveY() {
-        withAnimation(.easeIn(duration: 1.0)) {
+        withAnimation(.easeIn(duration: 0.8)) {
             roketPosition.y += 45
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
             withAnimation(.easeOut(duration: 1)) {
                 roketPosition.y -= 905
                 fire()
             }
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
             roketPosition.y = 300
-            withAnimation(.linear(duration: 1)) {
+            withAnimation(.linear(duration: 0.8)) {
                 roketPosition.y -= 255
             }
         }
@@ -107,7 +88,7 @@ struct FrontView: View {
     private func fire() {
         isFire = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            withAnimation(.linear(duration: 1.0)) {
+            withAnimation(.linear(duration: 0.5)) {
                 isFire = false
             }
         }
