@@ -13,11 +13,14 @@ struct ContentView: View {
     @State private var rectangle:CGFloat = 40
     
     @State private var dogPositionX:CGFloat = 100
+    //40size, MAX:243
     @State private var dogPositionY:CGFloat = 283
     @State private var rectanglePotionX:CGFloat = 640
     @State private var rectanglePotionY:CGFloat = 280
     
     @State private var timer: Timer?
+    @State private var jumpTimer: Timer?
+    @State private var downTimer: Timer?
     
     @State private var count:Int = 0
     @State private var rectangles: [CGFloat] = []
@@ -27,7 +30,7 @@ struct ContentView: View {
     @AppStorage("Score") private var score: Int = 0
     
     @State private var isResult:Bool = false
-    @State private var isStop:Bool = true
+    @State private var isStop:Bool = false
     @State private var isOn:Bool = true
     
     var body: some View {
@@ -230,7 +233,7 @@ struct ContentView: View {
     
     private func Cheak() {
         let dogFrame = CGRect(x:dogPositionX, y: dogPositionY, width: 50, height: 50)
-        let rectangleFrame = CGRect(x:rectanglePotionX - 10, y: rectanglePotionY + 10, width:rectangle, height: rectangle)
+        let rectangleFrame = CGRect(x:rectanglePotionX + 25, y: rectanglePotionY + 25, width:rectangle, height: rectangle)
         if dogFrame.intersects(rectangleFrame) {
             timer?.invalidate()
             MinusResult()
@@ -271,12 +274,28 @@ struct ContentView: View {
     }
     
     private func jump() {
-        withAnimation(.easeInOut(duration: 0.3)) {
-            dogPositionY -= 60
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                withAnimation(.easeInOut(duration: 0.3)) {
-                    dogPositionY += 60
+        jumpTimer = Timer.scheduledTimer(withTimeInterval: 0.003, repeats: true) { _ in
+            if dogPositionY >= 183 {
+                dogPositionY -= 1
+                dogPositionX += 0.5
+            } else {
+                jumpTimer?.invalidate()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    down()
                 }
+            }
+        }
+    }
+    
+    private func down() {
+        downTimer = Timer.scheduledTimer(withTimeInterval: 0.003, repeats: true) { _ in
+            if dogPositionY <= 283 {
+                dogPositionY += 1
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    dogPositionX -= 0.5
+                }
+            } else {
+                downTimer?.invalidate()
             }
         }
     }
