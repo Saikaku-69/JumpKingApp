@@ -30,8 +30,10 @@ struct ContentView: View {
     @AppStorage("Score") private var score: Int = 0
     
     @State private var isResult:Bool = false
-    @State private var isStop:Bool = false
+    @State private var isStop:Bool = true
     @State private var isOn:Bool = true
+    
+    @State private var birdPosition:CGPoint = CGPoint(x:500,y:100)
     
     var body: some View {
         VStack {
@@ -63,9 +65,6 @@ struct ContentView: View {
                                 isStop = false
                                 isOn = false
                             }) {
-//                                Text("開始")
-//                                    .foregroundColor(.white)
-//                                    .padding(.horizontal)
                                 Image("startButton")
                             }
                         }
@@ -89,6 +88,9 @@ struct ContentView: View {
                         .aspectRatio(contentMode: .fit)
                 }
                 .offset(y:43)
+                
+                Image("threeBird")
+                    .position(birdPosition)
                 Image("dog")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -111,12 +113,6 @@ struct ContentView: View {
                     }
                     .position(x:rectanglePotionX, y: rectanglePotionY)
                 }
-                
-//                Rectangle()
-//                    .fill(.red)
-//                    .opacity(0.3)
-//                    .frame(width:5,height: 30)
-//                    .position(x:300, y: 300)
                 Image("sword")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -163,10 +159,6 @@ struct ContentView: View {
                         isStop = false
                     }
                 }) {
-//                    Circle()
-//                        .fill(.gray)
-//                        .opacity(0.2)
-//                        .frame(width:80)
                     Image("jumpButton")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -185,6 +177,9 @@ struct ContentView: View {
                 resetGame()
             },
                   secondaryButton: .cancel())
+        }
+        .onAppear() {
+            birdFly()
         }
     }
     
@@ -233,7 +228,7 @@ struct ContentView: View {
     
     private func Cheak() {
         let dogFrame = CGRect(x:dogPositionX, y: dogPositionY, width: 50, height: 50)
-        let rectangleFrame = CGRect(x:rectanglePotionX + 25, y: rectanglePotionY + 25, width:rectangle, height: rectangle)
+        let rectangleFrame = CGRect(x:rectanglePotionX + 20, y: rectanglePotionY + 20, width:rectangle, height: rectangle)
         if dogFrame.intersects(rectangleFrame) {
             timer?.invalidate()
             MinusResult()
@@ -248,23 +243,6 @@ struct ContentView: View {
             }
         }
     }
-    // count > 1000時の判定
-    //    private func speedUpCheak() {
-    //            let dogFrame = CGRect(x:dogPositionX, y: dogPositionY, width: 50, height: 50)
-    //            let rectangleFrame = CGRect(x:rectanglePotionX - 10, y: rectanglePotionY + 10, width:rectangle, height: rectangle)
-    //            if dogFrame.intersects(rectangleFrame) {
-    //                timer?.invalidate()
-    //                MinusResult()
-    //                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-    //                    resetMove()
-    //                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-    //                        Move()
-    //                    }
-    //                    count -= 50
-    //                    dogPositionX += 10
-    //            }
-    //        }
-    //    }
     
     private func MinusResult() {
         isMinus = true
@@ -277,10 +255,10 @@ struct ContentView: View {
         jumpTimer = Timer.scheduledTimer(withTimeInterval: 0.003, repeats: true) { _ in
             if dogPositionY >= 183 {
                 dogPositionY -= 1
-                dogPositionX += 0.5
+                dogPositionX += 0.3
             } else {
                 jumpTimer?.invalidate()
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                     down()
                 }
             }
@@ -292,7 +270,7 @@ struct ContentView: View {
             if dogPositionY <= 283 {
                 dogPositionY += 1
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    dogPositionX -= 0.5
+                    dogPositionX -= 0.3
                 }
             } else {
                 downTimer?.invalidate()
@@ -301,7 +279,7 @@ struct ContentView: View {
     }
     
     private func gameResult() {
-        if count <= -1000 || dogPositionX >= 300 || gameTime.playTime == 0 {
+        if count <= -200 || dogPositionX >= 300 || gameTime.playTime == 0 {
             isResult = true
             stopTimer()
             gameTime.tok()
@@ -316,6 +294,36 @@ struct ContentView: View {
         gameTime.tok()
         gameTime.playTime = 60
         rectangles.removeAll()
+    }
+    
+    private func birdFly() {
+        if birdPosition.x >= -100 {
+            
+            withAnimation(.linear(duration: 2)) {
+                birdPosition.x -= 200
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                withAnimation(.linear(duration: 1)) {
+                    birdPosition.x -= 100
+                    birdPosition.y += 50
+                }
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                withAnimation(.linear(duration: 1.5)) {
+                    birdPosition.x -= 150
+                    birdPosition.y -= 50
+                }
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 4.5) {
+                withAnimation(.linear(duration: 1)) {
+                    birdPosition.x -= 100
+                }
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) {
+                birdPosition.x = 500
+                birdFly()
+            }
+        }
     }
 }
 
