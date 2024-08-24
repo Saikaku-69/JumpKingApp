@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject private var gameTime = GameTime()
-    @ObservedObject private var itemResult = ItemResult()
     
     @State private var rectangle:CGFloat = 40
     
@@ -25,6 +24,11 @@ struct ContentView: View {
     
     @State private var count:Int = 0
     @State private var rectangles: [CGFloat] = []
+    //item
+    @State private var items: [CGFloat] = []
+    @State private var itemFrame:CGFloat = 30
+    @State private var itemPositionX:CGFloat = 640
+    @State private var itemPositionY:CGFloat = 190
     
     @State private var isPlus:Bool = false
     @State private var isMinus:Bool = false
@@ -33,8 +37,6 @@ struct ContentView: View {
     @State private var isResult:Bool = false
     @State private var isStop:Bool = true
     @State private var isOn:Bool = true
-    @State private var isNormal:Bool = true
-    @State private var isStar:Bool = true
     
     @State private var birdPosition:CGPoint = CGPoint(x:500,y:100)
     
@@ -92,15 +94,6 @@ struct ContentView: View {
                 }
                 .offset(y:43)
                 
-                //itemBox
-//                if isStar {
-//                    Image("staritem")
-//                        .resizable()
-//                        .aspectRatio(contentMode: .fit)
-//                        .frame(width: itemResult.itemFrame)
-//                        .position(itemResult.itemPosition)
-//                }
-                
                 Image("threeBird")
                     .position(birdPosition)
                 Image("dog")
@@ -114,6 +107,16 @@ struct ContentView: View {
                         .frame(width:rectangle,height: rectangle)
                         .position(x:rectanglePotionX, y: rectanglePotionY)
                 }
+                
+                //itemBox
+//                ForEach(items, id: \.self) { _ in
+//                    Image("staritem")
+//                        .resizable()
+//                        .aspectRatio(contentMode: .fit)
+//                        .frame(width:itemFrame,height:itemFrame)
+//                        .position(x:itemPositionX, y: itemPositionY)
+//                }
+                
                 //minusBox
                 if isMinus {
                     ZStack {
@@ -198,6 +201,18 @@ struct ContentView: View {
     private func create() {
         rectangles.append(rectanglePotionX)
     }
+    //item_Test
+//    func createItem() {
+//        items.append(itemPositionX)
+//    }
+    
+//    func ItemCheck() {
+//        let dogFrame = CGRect(x:dogPositionX, y: dogPositionY, width: 50, height: 50)
+//        let starFrame = CGRect(x:itemPositionX + 20, y: itemPositionY - 90, width:itemFrame, height: itemFrame)
+//        if dogFrame.intersects(starFrame) {
+//            count += 1000
+//        }
+//    }
     
     private func resetMove() {
         rectanglePotionX = 640
@@ -241,31 +256,18 @@ struct ContentView: View {
     private func Cheak() {
         let dogFrame = CGRect(x:dogPositionX, y: dogPositionY, width: 50, height: 50)
         let rectangleFrame = CGRect(x:rectanglePotionX + 20, y: rectanglePotionY + 20, width:rectangle, height: rectangle)
-        if isNormal {
-            if dogFrame.intersects(rectangleFrame) {
-                timer?.invalidate()
-                MinusResult()
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    resetMove()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                        Move()
-                    }
-                    count -= 50
-                    dogPositionX += 10
+        if dogFrame.intersects(rectangleFrame) {
+            timer?.invalidate()
+            MinusResult()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                resetMove()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                    Move()
                 }
+                count -= 50
+                dogPositionX += 10
             }
         }
-        
-        //無敵5秒
-        let starItemFrame = CGRect(x:itemResult.itemFrame,y:itemResult.itemFrame,width: 30, height: 30)
-        if dogFrame.intersects(starItemFrame) {
-            isStar = false
-            isNormal = false
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                isNormal = true
-            }
-        }
-        
     }
     
     private func MinusResult() {
