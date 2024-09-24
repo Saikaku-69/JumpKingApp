@@ -12,6 +12,7 @@ struct FrontView: View {
     @State private var roketPosition:CGPoint = CGPoint(x:200,y:45)
     @State private var isWait:Bool = false
     @State private var isFire:Bool = false
+    @State private var ruleSheet:Bool = false
     
     var body: some View {
         Spacer()
@@ -30,14 +31,23 @@ struct FrontView: View {
                     .frame(width:130)
             }
             .disabled(isWait)
-            
-            Image("menuButton")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width:130)
+            //Item&rule紹介
+            Button(action: {
+                ruleSheet = true
+            }) {
+                Image("menuButton")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width:130)
+            }
         }
         .fullScreenCover(isPresented: $isPlay) {
             ContentView()
+        }
+        .sheet(isPresented: $ruleSheet) {
+                MenuView()
+                .presentationDetents([.fraction(0.7)])
+                .presentationDetents([.medium])
         }
         Spacer()
         ZStack {
