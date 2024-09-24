@@ -40,6 +40,8 @@ struct ContentView: View {
     
     @State private var birdPosition:CGPoint = CGPoint(x:500,y:100)
     
+    @State private var windPosition:CGFloat = 300
+    
     var body: some View {
         VStack {
             
@@ -84,16 +86,19 @@ struct ContentView: View {
                     .aspectRatio(contentMode: .fit)
                     .offset(y:43)
                 HStack {
-                    Image("haikei1")
+                    Image("haikei0")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                     Spacer()
-                    Image("haikei2")
+                    Image("haikei0")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                 }
                 .offset(y:43)
-                
+                //wind
+                Image("sky")
+                    .offset(x:windPosition,y: -150)
+                    
                 Image("threeBird")
                     .position(birdPosition)
                 Image("dog")
@@ -186,6 +191,7 @@ struct ContentView: View {
         }
         .onAppear() {
             birdFly()
+            windAnitor()
         }
     }
     
@@ -260,7 +266,7 @@ struct ContentView: View {
         jumpTimer = Timer.scheduledTimer(withTimeInterval: 0.003, repeats: true) { _ in
             if dogPositionY >= 193 {
                 dogPositionY -= 1
-                dogPositionX += 0.3
+//                dogPositionX += 0.3
             } else {
                 jumpTimer?.invalidate()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
@@ -274,9 +280,9 @@ struct ContentView: View {
         downTimer = Timer.scheduledTimer(withTimeInterval: 0.003, repeats: true) { _ in
             if dogPositionY <= 283 {
                 dogPositionY += 1
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    dogPositionX -= 0.3
-                }
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+//                    dogPositionX -= 0.3
+//                }
             } else {
                 downTimer?.invalidate()
             }
@@ -328,6 +334,15 @@ struct ContentView: View {
                 birdPosition.x = 500
                 birdFly()
             }
+        }
+    }
+    private func windAnitor() {
+        withAnimation(.linear(duration:7)) {
+            windPosition -= 700
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 7) {
+            windPosition = 300
+            windAnitor()
         }
     }
 }
