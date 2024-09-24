@@ -108,15 +108,6 @@ struct ContentView: View {
                         .position(x:rectanglePotionX, y: rectanglePotionY)
                 }
                 
-                //itemBox
-//                ForEach(items, id: \.self) { _ in
-//                    Image("staritem")
-//                        .resizable()
-//                        .aspectRatio(contentMode: .fit)
-//                        .frame(width:itemFrame,height:itemFrame)
-//                        .position(x:itemPositionX, y: itemPositionY)
-//                }
-                
                 //minusBox
                 if isMinus {
                     ZStack {
@@ -201,18 +192,6 @@ struct ContentView: View {
     private func create() {
         rectangles.append(rectanglePotionX)
     }
-    //item_Test
-//    func createItem() {
-//        items.append(itemPositionX)
-//    }
-    
-//    func ItemCheck() {
-//        let dogFrame = CGRect(x:dogPositionX, y: dogPositionY, width: 50, height: 50)
-//        let starFrame = CGRect(x:itemPositionX + 20, y: itemPositionY - 90, width:itemFrame, height: itemFrame)
-//        if dogFrame.intersects(starFrame) {
-//            count += 1000
-//        }
-//    }
     
     private func resetMove() {
         rectanglePotionX = 640
