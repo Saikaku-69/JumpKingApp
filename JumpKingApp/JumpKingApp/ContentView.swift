@@ -217,7 +217,7 @@ struct ContentView: View {
     
     private func Move() {
         timer = Timer.scheduledTimer(withTimeInterval: 0.003, repeats: true) { _ in
-            if gameTime.playTime > 30 {
+            if gameTime.playTime >= 0 {
                 if rectanglePotionX > 35 {
                     rectanglePotionX -= 1
                     Cheak()
@@ -229,19 +229,21 @@ struct ContentView: View {
                     }
                     count += 100
                 }
-            } else {
-                if rectanglePotionX > 35 {
-                    rectanglePotionX -= 1.5
-                    Cheak()
-                } else if rectanglePotionX <= 35 {
-                    rectanglePotionX = 640
-                    isPlus = true
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        isPlus = false
-                    }
-                    count += 100
-                }
             }
+            //30秒ごとに変速
+//            else {
+//                if rectanglePotionX > 35 {
+//                    rectanglePotionX -= 1.5
+//                    Cheak()
+//                } else if rectanglePotionX <= 35 {
+//                    rectanglePotionX = 640
+//                    isPlus = true
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+//                        isPlus = false
+//                    }
+//                    count += 100
+//                }
+//            }
             gameResult()
         }
     }
@@ -277,7 +279,6 @@ struct ContentView: View {
         jumpTimer = Timer.scheduledTimer(withTimeInterval: 0.003, repeats: true) { _ in
             if dogPositionY >= 193 {
                 dogPositionY -= 1
-                //                dogPositionX += 0.3
             } else {
                 jumpTimer?.invalidate()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
