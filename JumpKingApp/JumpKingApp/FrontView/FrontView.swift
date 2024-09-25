@@ -9,10 +9,13 @@ import SwiftUI
 
 struct FrontView: View {
     @State private var isPlay:Bool = false
-    @State private var roketPosition:CGPoint = CGPoint(x:200,y:45)
+    @State private var roketPosition:CGPoint = CGPoint(x:200,y:185)
+    @State private var firePosition:CGPoint = CGPoint(x:200,y:155)
     @State private var isWait:Bool = false
+    //
     @State private var isFire:Bool = false
     @State private var ruleSheet:Bool = false
+    @State private var ModeChange:Bool = false
     
     var body: some View {
         Spacer()
@@ -40,9 +43,22 @@ struct FrontView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width:130)
             }
+            .disabled(isWait)
+            Button(action: {
+                ModeChange = true
+            }) {
+                Image("next")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width:100)
+            }
+            .disabled(isWait)
         }
         .fullScreenCover(isPresented: $isPlay) {
             ContentView()
+        }
+        .fullScreenCover(isPresented: $ModeChange) {
+            NewModeView()
         }
         .sheet(isPresented: $ruleSheet) {
                 MenuView()
@@ -51,6 +67,13 @@ struct FrontView: View {
         }
         Spacer()
         ZStack {
+            HStack {
+                Image("treeL")
+                Spacer()
+                Image("treeR")
+            }
+            .offset(y:-155)
+            //地面
             HStack(spacing: 0) {
                 ForEach(1...2, id: \.self) { _ in
                     Image("ground")
@@ -61,9 +84,10 @@ struct FrontView: View {
             }
                 .offset(y:65)
             
+            //roket
             if isFire {
                 Image("fire")
-                    .position(x:200,y:12)
+                    .position(firePosition)
             }
             
             Image("roket")
@@ -73,8 +97,9 @@ struct FrontView: View {
                 .position(roketPosition)
             
         }.frame(width:200,height:100)
+        
+        //
     }
-    
     private func roketMoveY() {
         withAnimation(.easeIn(duration: 0.8)) {
             roketPosition.y += 45
