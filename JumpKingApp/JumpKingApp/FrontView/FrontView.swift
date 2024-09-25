@@ -115,7 +115,7 @@ struct FrontView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
             roketPosition.y = 300
             withAnimation(.linear(duration: 0.8)) {
-                roketPosition.y -= 255
+                roketPosition.y -= 120
             }
         }
     }
