@@ -20,6 +20,9 @@ let itemList = [
 ]
 
 struct MenuView: View {
+    @State private var isWheelView:Bool = false
+    @State private var isZoomView:Bool = false
+    @State private var isCGSizeView:Bool = false
     var body: some View {
         ScrollView {
             //rule bar
@@ -63,6 +66,42 @@ struct MenuView: View {
             }
             .padding(.leading,30)
             .frame(width:UIScreen.main.bounds.width,alignment: .leading)
+            HStack {
+                Button(action: {
+                    //wheelView
+                    isWheelView = true
+                }) {
+                    Rectangle()
+                        .frame(width:50,height:50)
+                }
+                .padding(.trailing,50)
+                
+                Button(action: {
+                    //zoomView
+                    isZoomView = true
+                }) {
+                    Rectangle()
+                        .frame(width:50,height:50)
+                }
+                .padding(.trailing,50)
+                
+                Button(action: {
+                    //SizeView
+                    isCGSizeView = true
+                }) {
+                    Rectangle()
+                        .frame(width:50,height:50)
+                }
+            }
+            .fullScreenCover(isPresented: $isWheelView) {
+                WheelView()
+            }
+            .fullScreenCover(isPresented: $isZoomView) {
+                ZoomView()
+            }
+            .fullScreenCover(isPresented: $isCGSizeView) {
+                CGSizeTestView()
+            }
         }
     }
 }
