@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject private var gameTime = GameTime()
+    @ObservedObject private var backHomePageButton = BackHomePageButton()
     
     @State private var rectangle:CGFloat = 40
     
@@ -40,9 +41,9 @@ struct ContentView: View {
     
     @State private var birdPosition:CGPoint = CGPoint(x:500,y:100)
     
-    @State private var windPosition:CGFloat = 300
+    @State private var windPosition:CGFloat = 330
     @State private var showScore:Bool = false
-    
+    //一张图[max:250, min:-260] 修正ground卡顿的问题
     @State private var groundPosition:CGPoint = CGPoint(x:300,y:190)
     var body: some View {
         VStack {
@@ -51,6 +52,17 @@ struct ContentView: View {
                 //TimeLine & ScoreLine
                 VStack {
                     HStack {
+                        Button (action: {
+                            backHomePageButton.backHomePage = true
+                        }) {
+                            Image(systemName: "arrowshape.left")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width:30)
+                                .foregroundColor(.black)
+                        }
+                        .padding(.leading,20)
+                        .offset(y:-30)
                         Spacer()
                         Image("timelimit")
                             .resizable()
@@ -148,6 +160,9 @@ struct ContentView: View {
                         isStop = false
                         StartGame = false
                         showScore = true
+                        //设定为开始游戏地图才会移动
+                        windAnitor()
+                        groundMove()
                     }) {
                         Image("startButton")
                     }
@@ -201,9 +216,8 @@ struct ContentView: View {
             },
                   secondaryButton: .cancel())
         }
-        .onAppear() {
-            windAnitor()
-            groundMove()
+        .fullScreenCover(isPresented: $backHomePageButton.backHomePage) {
+            FrontView()
         }
     }
     
@@ -230,20 +244,6 @@ struct ContentView: View {
                     count += 100
                 }
             }
-            //30秒ごとに変速
-//            else {
-//                if rectanglePotionX > 35 {
-//                    rectanglePotionX -= 1.5
-//                    Cheak()
-//                } else if rectanglePotionX <= 35 {
-//                    rectanglePotionX = 640
-//                    isPlus = true
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-//                        isPlus = false
-//                    }
-//                    count += 100
-//                }
-//            }
             gameResult()
         }
     }
@@ -299,7 +299,7 @@ struct ContentView: View {
     }
     
     private func gameResult() {
-        if count <= -200 || dogPositionX >= 300 || gameTime.playTime == 0 {
+        if gameTime.playTime == 0 {
             isResult = true
             stopTimer()
             gameTime.tok()
@@ -315,36 +315,6 @@ struct ContentView: View {
         gameTime.playTime = 60
         rectangles.removeAll()
     }
-    
-//    private func birdFly() {
-//        if birdPosition.x >= -100 {
-//            
-//            withAnimation(.linear(duration: 2)) {
-//                birdPosition.x -= 200
-//            }
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-//                withAnimation(.linear(duration: 1)) {
-//                    birdPosition.x -= 100
-//                    birdPosition.y += 50
-//                }
-//            }
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-//                withAnimation(.linear(duration: 1.5)) {
-//                    birdPosition.x -= 150
-//                    birdPosition.y -= 50
-//                }
-//            }
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 4.5) {
-//                withAnimation(.linear(duration: 1)) {
-//                    birdPosition.x -= 100
-//                }
-//            }
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) {
-//                birdPosition.x = 500
-//                birdFly()
-//            }
-//        }
-//    }
     
     private func windAnitor() {
         withAnimation(.linear(duration:7)) {

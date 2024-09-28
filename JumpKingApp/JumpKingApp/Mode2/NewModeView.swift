@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct NewModeView: View {
+    @ObservedObject private var backHomeHageButton = BackHomePageButton()
     //進行中の位置
-    //    @State private var position:CGPoint = CGPoint(x:50,y:50)
     @State private var defaultPosition:CGPoint = CGPoint(x:50,y:585)
     @State private var Gaming:Bool = false
     @State private var RotationAngle: Double = 0
     @State private var timer:Timer? = nil
     @State private var StartButton:Bool = true
     @State private var backgroundTopPosition:CGPoint = CGPoint(x:200,y:20)
-    @State private var disableScreen:Bool = false
+    @State private var disableScreen:Bool = true
     
     var body: some View {
         ZStack {
@@ -29,11 +29,15 @@ struct NewModeView: View {
             .disabled(disableScreen)
             .border(.gray)
             VStack {
-                Image("sword")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width:100)
-                    .rotationEffect(Angle(degrees: -45), anchor: .bottom)
+                Button(action: {
+                    backHomeHageButton.backHomePage = true
+                }) {
+                    Image("sword")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width:100)
+                        .rotationEffect(Angle(degrees: -45), anchor: .bottom)
+                }
                 Image("roket")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -68,12 +72,16 @@ struct NewModeView: View {
                 }
             }
         }
+        .fullScreenCover(isPresented: $backHomeHageButton.backHomePage) {
+            FrontView()
+        }
     }
     
     private func flyUp() {
         withAnimation(.easeInOut(duration:0.3)) {
             RotationAngle -= 45
-            defaultPosition.y -= 60
+            //如果要添加碰撞判定就要细分化Position
+            defaultPosition.y -= 70
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 RotationAngle += 45
             }

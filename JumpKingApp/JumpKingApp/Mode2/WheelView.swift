@@ -88,7 +88,7 @@ struct WheelView: View {
 //        .edgesIgnoringSafeArea(.all)
         .border(.gray)
         .fullScreenCover(isPresented: $backHomePage) {
-            MenuView()
+            FrontView()
         }
         //dead line
     }

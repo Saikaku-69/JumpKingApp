@@ -12,10 +12,6 @@ struct CGSizeTestView: View {
     @GestureState private var dragOffset: CGSize = .zero
     @State private var backHomePage: Bool = false
     
-    //缩放比例
-//    @State private var scale: CGFloat = 1.0
-//    @GestureState private var dragScale: CGSize = .zero
-    
     var body: some View {
         VStack {
             Button(action: {
@@ -41,7 +37,7 @@ struct CGSizeTestView: View {
             Spacer()
         }
         .fullScreenCover(isPresented: $backHomePage) {
-            MenuView()
+            FrontView()
         }
     }
 }

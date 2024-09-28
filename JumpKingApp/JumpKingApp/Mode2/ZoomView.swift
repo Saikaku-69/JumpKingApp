@@ -16,17 +16,6 @@ struct ZoomView: View {
     @GestureState private var dragOffset: CGSize = .zero
     
     var body: some View {
-        //        Circle()
-        //            .fill(.green)
-        //            .scaledToFit()
-        //            .scaleEffect(scale)
-        //            .gesture(
-        //                MagnificationGesture()
-        //                    .onChanged { value in
-        //                        self.scale = value
-        //                    }
-        //            )
-        
         // 需要缩放的内容，例如图片
         Button(action: {
             backHomePage = true
@@ -45,9 +34,6 @@ struct ZoomView: View {
                             .updating($dragScale) { value, state, _ in
                                 state = value
                             }
-//                            .onChanged { value in
-//                                scale *= value // 实时更新缩放比例
-//                            }
                             .onEnded { value in
                                 // 在手势结束时，将最终缩放值应用到 scale
                                 scale *= value // 更新原始缩放比例
@@ -65,7 +51,7 @@ struct ZoomView: View {
                 .frame(width: 300, height: 300)
         }
         .fullScreenCover(isPresented: $backHomePage) {
-            MenuView()
+            FrontView()
         }
     }
 }
