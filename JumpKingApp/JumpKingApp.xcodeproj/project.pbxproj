@@ -18,6 +18,7 @@
 		7F82E0A62CA7EC5F00A20A92 /* BackHomePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F82E0A52CA7EC5F00A20A92 /* BackHomePageView.swift */; };
 		7F8BDF0D2CA278160042E165 /* NewModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8BDF0C2CA278160042E165 /* NewModeView.swift */; };
 		7FB887EB2C8EC560002EDC40 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB887EA2C8EC560002EDC40 /* MenuView.swift */; };
+		7FEB857D2CA986970008AD24 /* JieYuanBaoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEB857C2CA986970008AD24 /* JieYuanBaoView.swift */; };
 		7FF02EB42C74AE170032AF94 /* GameTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF02EB32C74AE170032AF94 /* GameTime.swift */; };
 		7FF02EB72C74C5F10032AF94 /* FrontView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF02EB62C74C5F10032AF94 /* FrontView.swift */; };
 /* End PBXBuildFile section */
@@ -35,6 +36,7 @@
 		7F82E0A52CA7EC5F00A20A92 /* BackHomePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackHomePageView.swift; sourceTree = "<group>"; };
 		7F8BDF0C2CA278160042E165 /* NewModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewModeView.swift; sourceTree = "<group>"; };
 		7FB887EA2C8EC560002EDC40 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
+		7FEB857C2CA986970008AD24 /* JieYuanBaoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JieYuanBaoView.swift; sourceTree = "<group>"; };
 		7FF02EB32C74AE170032AF94 /* GameTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTime.swift; sourceTree = "<group>"; };
 		7FF02EB62C74C5F10032AF94 /* FrontView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -76,6 +78,7 @@
 				7FF02EB52C74C5D70032AF94 /* FrontView */,
 				7F8BDF0B2CA277B00042E165 /* Mode2 */,
 				7F82E0A22CA7240700A20A92 /* Ui */,
+				7FEB857B2CA986280008AD24 /* JieYuanBao */,
 				7F44111F2C6A5ED500E82C3D /* Assets.xcassets */,
 				7F4411212C6A5ED500E82C3D /* Preview Content */,
 			);
@@ -107,6 +110,14 @@
 				7F82E0A02CA6F68400A20A92 /* CGSizeTestView.swift */,
 			);
 			path = Mode2;
+			sourceTree = "<group>";
+		};
+		7FEB857B2CA986280008AD24 /* JieYuanBao */ = {
+			isa = PBXGroup;
+			children = (
+				7FEB857C2CA986970008AD24 /* JieYuanBaoView.swift */,
+			);
+			path = JieYuanBao;
 			sourceTree = "<group>";
 		};
 		7FF02EB52C74C5D70032AF94 /* FrontView */ = {
@@ -193,6 +204,7 @@
 				7F82E09F2CA6ED1000A20A92 /* ZoomView.swift in Sources */,
 				7F82E0A42CA7242D00A20A92 /* LoadingView.swift in Sources */,
 				7FB887EB2C8EC560002EDC40 /* MenuView.swift in Sources */,
+				7FEB857D2CA986970008AD24 /* JieYuanBaoView.swift in Sources */,
 				7F82E0A62CA7EC5F00A20A92 /* BackHomePageView.swift in Sources */,
 				7F44111E2C6A5ED200E82C3D /* ContentView.swift in Sources */,
 				7FF02EB42C74AE170032AF94 /* GameTime.swift in Sources */,
