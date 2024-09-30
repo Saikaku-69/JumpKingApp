@@ -13,6 +13,9 @@ struct YuanBao: Identifiable {
 }
 
 struct JieYuanBaoView: View {
+    //分数
+    @State private var Score:Int = 0
+    
     @State private var StartButton:Bool = true
     //元宝大小
     @State private var YuanBaoWidth:CGFloat = 50
@@ -31,6 +34,8 @@ struct JieYuanBaoView: View {
     //计算偏差值，并实时更新主物体的最新位置
     @State private var MainRectPosition:CGSize = .zero
     @GestureState private var DragRectPosition:CGSize = .zero
+    
+    @State private var mainObjectPositionY: CGFloat = 300
     
     var body: some View {
         
@@ -64,16 +69,21 @@ struct JieYuanBaoView: View {
             Rectangle()
                 .fill(.green)
                 .frame(width:100,height:50)
-                .offset(x:MainRectPosition.width + DragRectPosition.width,y: 300)
+                .offset(x:MainRectPosition.width + DragRectPosition.width,y: mainObjectPositionY)
                 .gesture(
                     DragGesture()
                         .updating($DragRectPosition) {value, item,_ in
                             item = value.translation
+//                            collision()
                         }
                         .onEnded { value in
                             MainRectPosition.width += value.translation.width
+//                            collision()
                         }
                 )
+            //得分情况
+            Text("スコア：\(Score)")
+                .offset(y: -300)
         }
         .frame(maxWidth: .infinity)
         .frame(maxHeight: .infinity)
@@ -127,9 +137,21 @@ struct JieYuanBaoView: View {
     }
     
 //    private func collision() {
-//        let mainObjectFrame = CGRect(x: MainRectPosition.width + DragRectPosition.width, y: 300, width: 100, height: 50)
-//        for yuanbao in GetYuanBao {
-//            let yuanbaoFrame = CGRect(x: yuanbao.position.x - YuanBaoWidth / 2, y: yuanbao.position.y - YuanBaoHeight / 2, width: YuanBaoWidth, height: YuanBaoHeight)
+//        // 计算主物体的实际位置
+//        let actualPosition = CGPoint(x:MainRectPosition.width + DragRectPosition.width, y: mainObjectPositionY)
+//        let mainObjectFrame = CGRect(x: actualPosition.x - 50, y: actualPosition.y - 25, width: 100, height: 50)
+//
+//        for index in GetYuanBao.indices.reversed() {
+//            let yuanbaoFrame = CGRect(x: GetYuanBao[index].position.x - YuanBaoWidth / 2,
+//                                      y: GetYuanBao[index].position.y - YuanBaoHeight / 2,
+//                                      width: YuanBaoWidth,
+//                                      height: YuanBaoHeight)
+//            
+//            if mainObjectFrame.intersects(yuanbaoFrame) {
+//                // 如果发生碰撞，处理元宝的消失
+//                GetYuanBao.remove(at: index)
+//                Score += 100
+//            }
 //        }
 //    }
 }
