@@ -13,6 +13,7 @@ struct YuanBao: Identifiable {
 }
 
 struct JieYuanBaoView: View {
+    @State private var StartButton:Bool = true
     //元宝大小
     @State private var YuanBaoWidth:CGFloat = 50
     @State private var YuanBaoHeight:CGFloat = 50
@@ -24,17 +25,17 @@ struct JieYuanBaoView: View {
     @State private var screenHeight: CGFloat = 0
     @State private var maxY: CGFloat = 0
     
-    //定时器为了实时观察fallOut()
+    //定时器为了实时观察判定
     @State private var FallTimer: Timer?
     
-    //主物体
+    //计算偏差值，并实时更新主物体的最新位置
     @State private var MainRectPosition:CGSize = .zero
     @GestureState private var DragRectPosition:CGSize = .zero
     
     var body: some View {
         
         ZStack {
-            //固定y轴，随机x轴上生成元宝
+            //生成元宝放入数组中
             //暂用Rectangle来代替元宝Img
             ForEach(GetYuanBao) { item in
                 Rectangle()
@@ -47,12 +48,19 @@ struct JieYuanBaoView: View {
             //设置判定线，触碰就会消失
             
             //游戏开始按键 = 生成元宝
-            Button(action: {
-                creatYuanBao()
-                startFalling()
-            }) {
-                Text("生成")
+            if StartButton {
+                Button(action: {
+                    gaming()
+                    StartButton = false
+                }) {
+                    Text("Game Start")
+                        .foregroundColor(.white)
+                        .padding(5)
+                        .background(.black)
+                        .cornerRadius(10)
+                }
             }
+            //控制主物体水平移动
             Rectangle()
                 .fill(.green)
                 .frame(width:100,height:50)
@@ -109,6 +117,21 @@ struct JieYuanBaoView: View {
             }
         }
     }
+    
+    private func gaming() {
+        creatYuanBao()
+        startFalling()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            gaming()
+        }
+    }
+    
+//    private func collision() {
+//        let mainObjectFrame = CGRect(x: MainRectPosition.width + DragRectPosition.width, y: 300, width: 100, height: 50)
+//        for yuanbao in GetYuanBao {
+//            let yuanbaoFrame = CGRect(x: yuanbao.position.x - YuanBaoWidth / 2, y: yuanbao.position.y - YuanBaoHeight / 2, width: YuanBaoWidth, height: YuanBaoHeight)
+//        }
+//    }
 }
 
 #Preview {
