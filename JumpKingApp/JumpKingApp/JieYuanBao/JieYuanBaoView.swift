@@ -13,6 +13,9 @@ struct YuanBao: Identifiable {
 }
 
 struct JieYuanBaoView: View {
+    //分数
+    @State private var Score:Int = 0
+    
     @State private var StartButton:Bool = true
     //元宝大小
     @State private var YuanBaoWidth:CGFloat = 50
@@ -31,6 +34,17 @@ struct JieYuanBaoView: View {
     //计算偏差值，并实时更新主物体的最新位置
     @State private var MainRectPosition:CGSize = .zero
     @GestureState private var DragRectPosition:CGSize = .zero
+    
+    @State private var mainObjectPositionY: CGFloat = 300
+    @State private var HomePage:Bool = false
+    
+    //mainObject New Position
+    @State private var objectPositionX:CGSize = .zero
+    @State private var objectPositionY:CGFloat = 700
+    
+    @GestureState private var NewobjectPositionX:CGSize = .zero
+    @GestureState private var NewobjectPositionY:CGFloat = 700
+    
     
     var body: some View {
         
@@ -60,24 +74,53 @@ struct JieYuanBaoView: View {
                         .cornerRadius(10)
                 }
             }
+            
             //控制主物体水平移动
+//            Rectangle()
+//                .fill(.green)
+//                .frame(width:100,height:50)
+//                .offset(x:MainRectPosition.width + DragRectPosition.width,y: mainObjectPositionY)
+//                .gesture(
+//                    DragGesture()
+//                        .updating($DragRectPosition) {value, item,_ in
+//                            item = value.translation
+////                            collision()
+//                        }
+//                        .onEnded { value in
+//                            MainRectPosition.width += value.translation.width
+////                            collision()
+//                        }
+//                )
             Rectangle()
                 .fill(.green)
                 .frame(width:100,height:50)
-                .offset(x:MainRectPosition.width + DragRectPosition.width,y: 300)
+                .position(x:objectPositionX.width + NewobjectPositionX.width,y:objectPositionY)
                 .gesture(
                     DragGesture()
-                        .updating($DragRectPosition) {value, item,_ in
+                        .updating($NewobjectPositionX) {value, item,_ in
                             item = value.translation
+                            collision()
                         }
                         .onEnded { value in
-                            MainRectPosition.width += value.translation.width
+                            objectPositionX.width += value.translation.width
+                            collision()
                         }
                 )
+            
+            //得分情况
+            Button(action: {
+                HomePage = true
+            }) {
+                Text("スコア：\(Score)")
+            }
+            .offset(y: -300)
         }
         .frame(maxWidth: .infinity)
         .frame(maxHeight: .infinity)
         .border(.gray)
+        .fullScreenCover(isPresented: $HomePage) {
+            FrontView()
+        }
         .onAppear() {
             // 计算屏幕高度和最大 Y 值
             screenHeight = UIScreen.main.bounds.height
@@ -87,8 +130,6 @@ struct JieYuanBaoView: View {
             // 停止定时器
             FallTimer?.invalidate()
         }
-        
-        
         
     }
     
@@ -103,6 +144,7 @@ struct JieYuanBaoView: View {
         FallTimer?.invalidate() // 确保之前的定时器停止
         FallTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
             fallOut()
+            collision()
         }
     }
     //坠落效果
@@ -126,12 +168,24 @@ struct JieYuanBaoView: View {
         }
     }
     
-//    private func collision() {
-//        let mainObjectFrame = CGRect(x: MainRectPosition.width + DragRectPosition.width, y: 300, width: 100, height: 50)
-//        for yuanbao in GetYuanBao {
-//            let yuanbaoFrame = CGRect(x: yuanbao.position.x - YuanBaoWidth / 2, y: yuanbao.position.y - YuanBaoHeight / 2, width: YuanBaoWidth, height: YuanBaoHeight)
-//        }
-//    }
+    private func collision() {
+        // 计算主物体的实际位置
+        let actualPosition = CGPoint(x:objectPositionX.width + NewobjectPositionX.width, y: objectPositionY)
+        let mainObjectFrame = CGRect(x: actualPosition.x - 50, y: actualPosition.y, width: 100, height: 50)
+
+        for index in GetYuanBao.indices.reversed() {
+            let yuanbaoFrame = CGRect(x: GetYuanBao[index].position.x - YuanBaoWidth / 2,
+                                      y: GetYuanBao[index].position.y - YuanBaoHeight / 2,
+                                      width: YuanBaoWidth,
+                                      height: YuanBaoHeight)
+            
+            if mainObjectFrame.intersects(yuanbaoFrame) {
+                // 如果发生碰撞，处理元宝的消失
+                GetYuanBao.remove(at: index)
+                Score += 100
+            }
+        }
+    }
 }
 
 #Preview {
