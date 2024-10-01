@@ -142,7 +142,7 @@ struct JieYuanBaoView: View {
     
     private func startFalling() {
         FallTimer?.invalidate() // 确保之前的定时器停止
-        FallTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
+        FallTimer = Timer.scheduledTimer(withTimeInterval: 0.005, repeats: true) { _ in
             fallOut()
             collision()
         }
@@ -152,7 +152,7 @@ struct JieYuanBaoView: View {
         for index in GetYuanBao.indices.reversed() {
             if GetYuanBao[index].position.y < maxY {
                 withAnimation(.linear) {
-                    GetYuanBao[index].position.y += 10
+                    GetYuanBao[index].position.y += 1
                 }
             } else {
                 GetYuanBao.remove(at: index)
@@ -171,7 +171,7 @@ struct JieYuanBaoView: View {
     private func collision() {
         // 计算主物体的实际位置
         let actualPosition = CGPoint(x:objectPositionX.width + NewobjectPositionX.width, y: objectPositionY)
-        let mainObjectFrame = CGRect(x: actualPosition.x - 50, y: actualPosition.y, width: 100, height: 50)
+        let mainObjectFrame = CGRect(x: actualPosition.x - 50, y: actualPosition.y - 15, width: 100, height: 50)
 
         for index in GetYuanBao.indices.reversed() {
             let yuanbaoFrame = CGRect(x: GetYuanBao[index].position.x - YuanBaoWidth / 2,
