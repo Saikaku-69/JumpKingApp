@@ -32,6 +32,9 @@ struct BoomView: View {
     @State private var mainObPositionX: CGSize = .zero
     @GestureState private var dragObPositionX: CGSize = .zero
     @State private var mainObPostionY: CGFloat = 700
+    
+    @State private var lifeCount:Int = 0
+    @State private var GameStart:Bool = false
     var body: some View {
         ZStack {
             ForEach(GetItem) { item in
@@ -42,23 +45,29 @@ struct BoomView: View {
                     .frame(width:ItemWidth,height:ItemHeight)
                     .position(item.Position)
             }
-                Text("点数：\(Score)")
+            ZStack {
+                Text("\(Score)")
+                    .fontWeight(.bold)
+                    .foregroundColor(.red)
+                    .offset(x: 30, y: -350)
+                Text("現在の体重:        KG")
                     .fontWeight(.bold)
                     .offset(y: -350)
-                
-                if StartButton {
-                    Button(action: {
-                        StartButton = false
-                        
-                        //掉落逻辑
-                        gaming()
-                        
-                        //开始计时
-                        
-                    }) {
-                        Text("Hello, World!")
-                    }
+            }
+            .frame(width:UIScreen.main.bounds.width/2)
+            if StartButton {
+                Button(action: {
+                    StartButton = false
+                    GameStart = true
+                    //掉落逻辑
+                    gaming()
+                    
+                    //开始计时
+                    
+                }) {
+                    Text("Hello, World!")
                 }
+            }
             Image("bucket")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
@@ -75,6 +84,21 @@ struct BoomView: View {
                             collision()
                         }
                 )
+            HStack {
+                ForEach(lifeCount..<5,id: \.self) { icon in
+                    Image("bkheart")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width:20)
+                }
+                ForEach(0..<lifeCount,id: \.self) { icon in
+                    Image("bkheartblack")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width:20)
+                }
+            }
+            .offset(y:-300)
         }
         .frame(maxWidth: .infinity)
         .frame(maxHeight: .infinity)
@@ -82,6 +106,9 @@ struct BoomView: View {
         .onAppear() {
             screenHeight = UIScreen.main.bounds.height
             deadLine = screenHeight
+        }
+        .onDisappear {
+            downTimer?.invalidate()
         }
     }
     
@@ -115,10 +142,12 @@ struct BoomView: View {
     }
     
     private func gaming() {
-        createItem()
-        startFalling()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            gaming()
+        if GameStart {
+            createItem()
+            startFalling()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                gaming()
+            }
         }
     }
     
@@ -127,7 +156,7 @@ struct BoomView: View {
         let newMainObjectFrame = CGRect( x:newMainObjectPosition.x - 50,
                                          y:newMainObjectPosition.y,
                                          width: mainObFrame,
-                                         height: mainObFrame)
+                                         height: 1)
         
         for index in GetItem.indices.reversed() {
             let itemRect = CGRect(x: GetItem[index].Position.x - ItemWidth / 2,
@@ -135,8 +164,26 @@ struct BoomView: View {
                                   width:ItemWidth,
                                   height:ItemHeight)
             if newMainObjectFrame.intersects(itemRect) {
-                GetItem.remove(at: index)
+                let itemName = GetItem[index]
+                if itemName.ImageName == "hamburger" {
+                    Score += 1
+                    GetItem.remove(at: index)
+                } else {
+                    lifeCount += 1
+                    GetItem.remove(at: index)
+                    GameOver()
+                }
             }
+        }
+    }
+    
+    private func GameOver() {
+        if lifeCount == 5 {
+            StartButton = true
+            GameStart = false
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                GetItem.removeAll()
+//            }
         }
     }
 }

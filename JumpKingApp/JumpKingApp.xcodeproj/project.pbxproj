@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7F0D43F02CACDA1100B39600 /* BoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0D43EF2CACDA1100B39600 /* BoomView.swift */; };
+		7F0D43F22CAD302B00B39600 /* ChooseMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0D43F12CAD302B00B39600 /* ChooseMenuView.swift */; };
 		7F44111C2C6A5ED200E82C3D /* JumpKingAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F44111B2C6A5ED200E82C3D /* JumpKingAppApp.swift */; };
 		7F44111E2C6A5ED200E82C3D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F44111D2C6A5ED200E82C3D /* ContentView.swift */; };
 		7F4411202C6A5ED500E82C3D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7F44111F2C6A5ED500E82C3D /* Assets.xcassets */; };
@@ -26,6 +27,7 @@
 
 /* Begin PBXFileReference section */
 		7F0D43EF2CACDA1100B39600 /* BoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoomView.swift; sourceTree = "<group>"; };
+		7F0D43F12CAD302B00B39600 /* ChooseMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseMenuView.swift; sourceTree = "<group>"; };
 		7F4411182C6A5ED200E82C3D /* JumpKingApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JumpKingApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F44111B2C6A5ED200E82C3D /* JumpKingAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JumpKingAppApp.swift; sourceTree = "<group>"; };
 		7F44111D2C6A5ED200E82C3D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 			children = (
 				7FEB857C2CA986970008AD24 /* JieYuanBaoView.swift */,
 				7F0D43EF2CACDA1100B39600 /* BoomView.swift */,
+				7F0D43F12CAD302B00B39600 /* ChooseMenuView.swift */,
 			);
 			path = JieYuanBao;
 			sourceTree = "<group>";
@@ -212,6 +215,7 @@
 				7F82E0A62CA7EC5F00A20A92 /* BackHomePageView.swift in Sources */,
 				7F44111E2C6A5ED200E82C3D /* ContentView.swift in Sources */,
 				7FF02EB42C74AE170032AF94 /* GameTime.swift in Sources */,
+				7F0D43F22CAD302B00B39600 /* ChooseMenuView.swift in Sources */,
 				7FF02EB72C74C5F10032AF94 /* FrontView.swift in Sources */,
 				7F8BDF0D2CA278160042E165 /* NewModeView.swift in Sources */,
 				7F44111C2C6A5ED200E82C3D /* JumpKingAppApp.swift in Sources */,

@@ -19,27 +19,43 @@ struct LoadingView: View {
     @State private var GoToMenu:Bool = false
     
     var body: some View {
-        HStack(spacing:3) {
-            ForEach(0..<words.count, id: \.self) { word in
-               //如果字段存储在数组中，字母就会显示出来
-                if animatedIndices.contains(word) {
-                    Text(words[word])
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .animation(.easeIn(duration: 0.3), value: animatedIndices)
+        ZStack {
+            Color.black.edgesIgnoringSafeArea(.all)
+            VStack {
+                HStack(spacing:0) {
+                    ForEach(0..<words.count, id: \.self) { word in
+                        //如果字段存储在数组中，字母就会显示出来
+                        if animatedIndices.contains(word) {
+                            Text(words[word])
+                                .font(.largeTitle)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .animation(.easeIn(duration: 0.3), value: animatedIndices)
+                        }
+                    }
                 }
-            }
-        }
-        .frame(width:UIScreen.main.bounds.width/2)
-        VStack {
-            if ShowTitle {
-                Text("Jump Dog")
+                .frame(width:UIScreen.main.bounds.width/2)
+                Spacer()
+                if ShowTitle {
+                    VStack {
+                        Text("モバイルアプリケーション")
+                        Text("開発科")
+                    }
                     .font(.largeTitle)
                     .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .opacity(TitleOpacity)
+                }
+                Spacer()
+                Text("李宰赫")
+                    .font(.body)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
                     .opacity(TitleOpacity)
             }
+            .frame(height:UIScreen.main.bounds.height/3)
         }
-        .frame(maxHeight:30)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5 ) {
                 for index in 0..<words.count {
@@ -48,7 +64,7 @@ struct LoadingView: View {
                         if words.count == animatedIndices.count {
                             ShowTitle = true
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            withAnimation(.linear(duration:1.5)) {
+                                withAnimation(.linear(duration:1.5)) {
                                     TitleOpacity += 1.0
                                     if TitleOpacity == 1.0 {
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
