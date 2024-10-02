@@ -106,6 +106,7 @@ struct BoomView: View {
         .onAppear() {
             screenHeight = UIScreen.main.bounds.height
             deadLine = screenHeight
+            mainObPositionX.width += 200
         }
         .onDisappear {
             downTimer?.invalidate()

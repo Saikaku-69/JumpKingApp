@@ -79,7 +79,7 @@ struct LoadingView: View {
             }
         }
         .fullScreenCover(isPresented: $GoToMenu) {
-            FrontView()
+            BoomView()
         }
     }
 }
