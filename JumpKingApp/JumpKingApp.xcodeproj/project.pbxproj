@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7F0D43F02CACDA1100B39600 /* BoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0D43EF2CACDA1100B39600 /* BoomView.swift */; };
 		7F44111C2C6A5ED200E82C3D /* JumpKingAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F44111B2C6A5ED200E82C3D /* JumpKingAppApp.swift */; };
 		7F44111E2C6A5ED200E82C3D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F44111D2C6A5ED200E82C3D /* ContentView.swift */; };
 		7F4411202C6A5ED500E82C3D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7F44111F2C6A5ED500E82C3D /* Assets.xcassets */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7F0D43EF2CACDA1100B39600 /* BoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoomView.swift; sourceTree = "<group>"; };
 		7F4411182C6A5ED200E82C3D /* JumpKingApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JumpKingApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F44111B2C6A5ED200E82C3D /* JumpKingAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JumpKingAppApp.swift; sourceTree = "<group>"; };
 		7F44111D2C6A5ED200E82C3D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				7FEB857C2CA986970008AD24 /* JieYuanBaoView.swift */,
+				7F0D43EF2CACDA1100B39600 /* BoomView.swift */,
 			);
 			path = JieYuanBao;
 			sourceTree = "<group>";
@@ -202,6 +205,7 @@
 				7F82E0A12CA6F68400A20A92 /* CGSizeTestView.swift in Sources */,
 				7F82E09D2CA6302C00A20A92 /* WheelView.swift in Sources */,
 				7F82E09F2CA6ED1000A20A92 /* ZoomView.swift in Sources */,
+				7F0D43F02CACDA1100B39600 /* BoomView.swift in Sources */,
 				7F82E0A42CA7242D00A20A92 /* LoadingView.swift in Sources */,
 				7FB887EB2C8EC560002EDC40 /* MenuView.swift in Sources */,
 				7FEB857D2CA986970008AD24 /* JieYuanBaoView.swift in Sources */,
