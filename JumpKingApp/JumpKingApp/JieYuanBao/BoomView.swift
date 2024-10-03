@@ -17,6 +17,8 @@ let ItemWidth: CGFloat = 50
 let ItemHeight: CGFloat = 50
 
 struct BoomView: View {
+    //加速test
+    @State private var SpeedupButton:Bool = false
     
     @State private var StartButton:Bool = true
     @State private var GetItem:[Item] = []
@@ -35,8 +37,10 @@ struct BoomView: View {
     
     @State private var lifeCount:Int = 0
     @State private var GameStart:Bool = false
+    @State private var showRuleSheet:Bool = false
     var body: some View {
         ZStack {
+            //            Color.black.edgesIgnoringSafeArea(.all)
             ForEach(GetItem) { item in
                 //itemImage
                 Image(item.ImageName)
@@ -56,17 +60,35 @@ struct BoomView: View {
             }
             .frame(width:UIScreen.main.bounds.width/2)
             if StartButton {
-                Button(action: {
-                    StartButton = false
-                    GameStart = true
-                    //掉落逻辑
-                    gaming()
-                    
-                    //开始计时
-                    
-                }) {
-                    Text("Hello, World!")
+                VStack {
+                    //rule
+                    Button(action: {
+                        showRuleSheet = true
+                    }) {
+                        Text("ルール紹介")
+                            .padding()
+                            .background(Color.ruleColor)
+                            .cornerRadius(15)
+                    }
+                    Button(action: {
+                        StartButton = false
+                        GameStart = true
+                        //掉落逻辑
+                        gaming()
+                        
+                        //开始计时
+                        
+                    }) {
+                        Text("ゲーム開始")
+                    }
+                    .padding()
+                    .background(Color.startColor)
+                    .cornerRadius(15)
                 }
+                .foregroundColor(.white)
+                .padding()
+                .background(.clear)
+                .cornerRadius(15)
             }
             Image("bucket")
                 .resizable()
@@ -110,6 +132,10 @@ struct BoomView: View {
         }
         .onDisappear {
             downTimer?.invalidate()
+        }
+        .sheet(isPresented: $showRuleSheet) {
+            BurgerKingRuleView()
+                .presentationDetents([.medium])
         }
     }
     
@@ -182,10 +208,21 @@ struct BoomView: View {
         if lifeCount == 5 {
             StartButton = true
             GameStart = false
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                GetItem.removeAll()
-//            }
+            GetItem.removeAll()
         }
+    }
+}
+
+extension Color {
+    static var ruleColor:Color {
+        return Color(
+            Color(hue: 0.5, saturation: 0.3, brightness: 0.8)
+        )
+    }
+    static var startColor:Color {
+        return Color(
+            Color(hue: 0.6, saturation: 0.8, brightness: 0.6)
+        )
     }
 }
 

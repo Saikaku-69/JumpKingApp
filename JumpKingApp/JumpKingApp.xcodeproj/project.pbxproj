@@ -19,6 +19,7 @@
 		7F82E0A42CA7242D00A20A92 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F82E0A32CA7242D00A20A92 /* LoadingView.swift */; };
 		7F82E0A62CA7EC5F00A20A92 /* BackHomePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F82E0A52CA7EC5F00A20A92 /* BackHomePageView.swift */; };
 		7F8BDF0D2CA278160042E165 /* NewModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8BDF0C2CA278160042E165 /* NewModeView.swift */; };
+		7F9366AB2CAE6644001A7A22 /* BurgerKingRuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F9366AA2CAE6644001A7A22 /* BurgerKingRuleView.swift */; };
 		7FB887EB2C8EC560002EDC40 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB887EA2C8EC560002EDC40 /* MenuView.swift */; };
 		7FEB857D2CA986970008AD24 /* JieYuanBaoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEB857C2CA986970008AD24 /* JieYuanBaoView.swift */; };
 		7FF02EB42C74AE170032AF94 /* GameTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF02EB32C74AE170032AF94 /* GameTime.swift */; };
@@ -39,6 +40,7 @@
 		7F82E0A32CA7242D00A20A92 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		7F82E0A52CA7EC5F00A20A92 /* BackHomePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackHomePageView.swift; sourceTree = "<group>"; };
 		7F8BDF0C2CA278160042E165 /* NewModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewModeView.swift; sourceTree = "<group>"; };
+		7F9366AA2CAE6644001A7A22 /* BurgerKingRuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurgerKingRuleView.swift; sourceTree = "<group>"; };
 		7FB887EA2C8EC560002EDC40 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		7FEB857C2CA986970008AD24 /* JieYuanBaoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JieYuanBaoView.swift; sourceTree = "<group>"; };
 		7FF02EB32C74AE170032AF94 /* GameTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTime.swift; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 			children = (
 				7FEB857C2CA986970008AD24 /* JieYuanBaoView.swift */,
 				7F0D43EF2CACDA1100B39600 /* BoomView.swift */,
+				7F9366AA2CAE6644001A7A22 /* BurgerKingRuleView.swift */,
 				7F0D43F12CAD302B00B39600 /* ChooseMenuView.swift */,
 			);
 			path = JieYuanBao;
@@ -216,6 +219,7 @@
 				7F44111E2C6A5ED200E82C3D /* ContentView.swift in Sources */,
 				7FF02EB42C74AE170032AF94 /* GameTime.swift in Sources */,
 				7F0D43F22CAD302B00B39600 /* ChooseMenuView.swift in Sources */,
+				7F9366AB2CAE6644001A7A22 /* BurgerKingRuleView.swift in Sources */,
 				7FF02EB72C74C5F10032AF94 /* FrontView.swift in Sources */,
 				7F8BDF0D2CA278160042E165 /* NewModeView.swift in Sources */,
 				7F44111C2C6A5ED200E82C3D /* JumpKingAppApp.swift in Sources */,
