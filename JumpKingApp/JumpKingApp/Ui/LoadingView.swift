@@ -37,14 +37,17 @@ struct LoadingView: View {
                 .frame(width:UIScreen.main.bounds.width/2)
                 Spacer()
                 if ShowTitle {
-                    VStack {
-                        Text("モバイルアプリケーション")
-                        Text("開発科")
-                    }
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-                    .opacity(TitleOpacity)
+//                    GeometryReader { geometry in
+                        VStack(alignment: .center) {
+                            Text("モバイルアプリケーション")
+                            Text("開発科")
+                        }
+                        .frame(maxWidth: .infinity)
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .opacity(TitleOpacity)
+//                    }
                 }
                 Spacer()
                 Text("李宰赫")
@@ -55,7 +58,6 @@ struct LoadingView: View {
             }
             .frame(height:UIScreen.main.bounds.height/3)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5 ) {
                 for index in 0..<words.count {
