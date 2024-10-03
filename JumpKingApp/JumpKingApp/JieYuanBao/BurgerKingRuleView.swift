@@ -15,7 +15,7 @@ struct BurgerKingRuleView: View {
                 .padding()
                 .background(Color.titleColor)
                 .cornerRadius(20)
-                .rotationEffect(Angle(degrees:5),anchor: .center)
+                .rotationEffect(Angle(degrees:2),anchor: .center)
                 .offset(y:-10)
             Text("・画面上から落ちてくるアイテムをキャッチして\nスコアを獲得しましょう!")
                 .foregroundColor(.black)
@@ -63,7 +63,6 @@ struct BurgerKingRuleView: View {
             .frame(width:UIScreen.main.bounds.width - 50,alignment: .leading)
         }
         .fontWeight(.bold)
-//        .border(.gray)
     }
 }
 

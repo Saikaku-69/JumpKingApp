@@ -40,91 +40,101 @@ struct BoomView: View {
     @State private var showRuleSheet:Bool = false
     var body: some View {
         ZStack {
-            //            Color.black.edgesIgnoringSafeArea(.all)
-            ForEach(GetItem) { item in
-                //itemImage
-                Image(item.ImageName)
+            GeometryReader { geometry in
+                // 背景图片，调整尺寸
+                Image("bkbg1")
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width:ItemWidth,height:ItemHeight)
-                    .position(item.Position)
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .edgesIgnoringSafeArea(.all) // 确保背景图覆盖整个屏幕
             }
-            ZStack {
-                Text("\(Score)")
-                    .fontWeight(.bold)
-                    .foregroundColor(.red)
-                    .offset(x: 30, y: -350)
-                Text("現在の体重:        KG")
-                    .fontWeight(.bold)
-                    .offset(y: -350)
-            }
-            .frame(width:UIScreen.main.bounds.width/2)
-            if StartButton {
-                VStack {
-                    //rule
-                    Button(action: {
-                        showRuleSheet = true
-                    }) {
-                        Text("ルール紹介")
-                            .padding()
-                            .background(Color.ruleColor)
-                            .cornerRadius(15)
+//            ZStack {
+                ForEach(GetItem) { item in
+                    //itemImage
+                    Image(item.ImageName)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width:ItemWidth,height:ItemHeight)
+                        .position(item.Position)
+                }
+                ZStack {
+                    Text("\(Score)")
+                        .fontWeight(.bold)
+                        .foregroundColor(.red)
+                        .offset(x: 30, y: -350)
+                    Text("現在の体重:   　　     KG")
+                        .fontWeight(.bold)
+                        .offset(y: -350)
+                }
+                .frame(width:UIScreen.main.bounds.width)
+                if StartButton {
+                    VStack {
+                        //rule
+                        Button(action: {
+                            showRuleSheet = true
+                        }) {
+                            Text("ルール紹介")
+                                .padding()
+                                .background(Color.ruleColor)
+                                .cornerRadius(15)
+                        }
+                        Button(action: {
+                            StartButton = false
+                            GameStart = true
+                            //掉落逻辑
+                            gaming()
+                            
+                            //开始计时
+                            
+                        }) {
+                            Text("ゲーム開始")
+                        }
+                        .padding()
+                        .background(Color.startColor)
+                        .cornerRadius(15)
                     }
-                    Button(action: {
-                        StartButton = false
-                        GameStart = true
-                        //掉落逻辑
-                        gaming()
-                        
-                        //开始计时
-                        
-                    }) {
-                        Text("ゲーム開始")
-                    }
+                    .foregroundColor(.white)
                     .padding()
-                    .background(Color.startColor)
+                    .background(.clear)
                     .cornerRadius(15)
                 }
-                .foregroundColor(.white)
-                .padding()
-                .background(.clear)
-                .cornerRadius(15)
-            }
-            Image("bucket")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: mainObFrame)
-                .position(x: mainObPositionX.width + dragObPositionX.width,y: mainObPostionY)
-                .gesture(
-                    DragGesture()
-                        .updating($dragObPositionX) { move, value, _ in
-                            value = move.translation
-                            collision()
-                        }
-                        .onEnded { value in
-                            mainObPositionX.width += value.translation.width
-                            collision()
-                        }
-                )
-            HStack {
-                ForEach(lifeCount..<5,id: \.self) { icon in
-                    Image("bkheart")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width:20)
+                Image("bucket")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: mainObFrame)
+                    .position(x: mainObPositionX.width + dragObPositionX.width,y: mainObPostionY)
+                    .gesture(
+                        DragGesture()
+                            .updating($dragObPositionX) { move, value, _ in
+                                value = move.translation
+                                collision()
+                            }
+                            .onEnded { value in
+                                mainObPositionX.width += value.translation.width
+                                collision()
+                            }
+                    )
+                HStack {
+                    ForEach(lifeCount..<5,id: \.self) { icon in
+                        Image("bkheart")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width:20)
+                    }
+                    ForEach(0..<lifeCount,id: \.self) { icon in
+                        Image("bkheartblack")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width:20)
+                    }
                 }
-                ForEach(0..<lifeCount,id: \.self) { icon in
-                    Image("bkheartblack")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width:20)
-                }
-            }
-            .offset(y:-300)
+                .offset(y:-300)
+//            }
+//            .border(.red)
         }
         .frame(maxWidth: .infinity)
         .frame(maxHeight: .infinity)
-        .border(.gray)
+        .edgesIgnoringSafeArea(.all)
         .onAppear() {
             screenHeight = UIScreen.main.bounds.height
             deadLine = screenHeight

@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct LoadingView: View {
-    let words = ["W", "e", "l", "c", "o", "m", "e"]
+    //    let words = ["W", "e", "l", "c", "o", "m", "e"]
+    let words = ["日", "本", "電", "子", "専", "門", "学", "校"]
     //用于存储已动画显示的字段
     @State private var animatedIndices: [Int] = []
     
@@ -22,6 +23,7 @@ struct LoadingView: View {
         ZStack {
             Color.black.edgesIgnoringSafeArea(.all)
             VStack {
+                Spacer()
                 HStack(spacing:0) {
                     ForEach(0..<words.count, id: \.self) { word in
                         //如果字段存储在数组中，字母就会显示出来
@@ -34,29 +36,34 @@ struct LoadingView: View {
                         }
                     }
                 }
-                .frame(width:UIScreen.main.bounds.width/2)
+                .frame(width:UIScreen.main.bounds.width)
                 Spacer()
-                if ShowTitle {
-//                    GeometryReader { geometry in
-                        VStack(alignment: .center) {
-                            Text("モバイルアプリケーション")
-                            Text("開発科")
+                VStack(alignment: .center) {
+                    if ShowTitle {
+                        Text("モバイルアプリケーション")
+                        Text("開発科")
+                        HStack {
+                            Spacer()
+                            Text("李宰赫")
+                                .font(.body)
                         }
-                        .frame(maxWidth: .infinity)
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                        .opacity(TitleOpacity)
-//                    }
+                    }
                 }
-                Spacer()
-                Text("李宰赫")
-                    .font(.body)
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-                    .opacity(TitleOpacity)
+                .frame(maxWidth: .infinity)
+                .frame(height:100)
+                .font(.title)
+                .fontWeight(.bold)
+                .foregroundColor(.white)
+                .opacity(TitleOpacity)
+//                Spacer()
+//                Text("李宰赫")
+//                    .font(.body)
+//                    .fontWeight(.bold)
+//                    .foregroundColor(.white)
+//                    .opacity(TitleOpacity)
             }
-            .frame(height:UIScreen.main.bounds.height/3)
+            .frame(height:UIScreen.main.bounds.height/2)
+//            .border(.red)
         }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5 ) {
