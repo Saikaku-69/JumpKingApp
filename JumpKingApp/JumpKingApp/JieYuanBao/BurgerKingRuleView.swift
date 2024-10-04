@@ -33,36 +33,50 @@ struct BurgerKingRuleView: View {
             }
             .padding(.vertical)
             //item List
-            HStack {
-                Image("hamburger")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width:30)
-                    .padding(.trailing)
-                Text("=　体重 + 1KG")
-                    .font(.title3)
+            VStack(alignment: .leading, spacing: 5) {
+                HStack {
+                    Image("hamburger")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width:30)
+                        .padding(.trailing)
+                    Text("=　体重 + 1KG")
+                        .font(.title3)
+                }
+                
+                HStack {
+                    Image("vagetable")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width:30)
+                        .padding(.trailing)
+                    Text("=　体重 - 1KG")
+                        .font(.title3)
+                }
+                
+                HStack {
+                    Image("poo")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width:30)
+                    Text("=")
+                        .font(.title3)
+                        .padding(.horizontal)
+                    Image("bkheart")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width:30)
+                    Text("-　1")
+                        .font(.title3)
+                        .padding(.horizontal)
+                }
             }
-            .frame(width:UIScreen.main.bounds.width - 50,alignment: .leading)
-            //        .border(.gray)
-            HStack {
-                Image("poo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width:30)
-                Text("=")
-                    .font(.title3)
-                    .padding(.horizontal)
-                Image("bkheart")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width:30)
-                Text("-　1")
-                    .font(.title3)
-                    .padding(.horizontal)
-            }
-            .frame(width:UIScreen.main.bounds.width - 50,alignment: .leading)
+            .padding(.horizontal)
+            .background(Color.itemList)
+            .cornerRadius(15)
         }
         .fontWeight(.bold)
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -86,6 +100,14 @@ extension Color {
     static var itemColor:Color {
         return Color(
             Color(hue: 0.3, saturation: 0.5, brightness: 1.0)
+        )
+    }
+}
+
+extension Color {
+    static var itemList:Color {
+        return Color(
+            Color(hue: 1.0, saturation: 0.3, brightness: 1.0)
         )
     }
 }

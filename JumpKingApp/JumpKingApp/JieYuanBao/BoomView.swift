@@ -17,6 +17,7 @@ let ItemWidth: CGFloat = 50
 let ItemHeight: CGFloat = 50
 
 struct BoomView: View {
+    @ObservedObject var bmidata: BmiData
     //加速test
     @State private var SpeedupButton:Bool = false
     
@@ -38,6 +39,7 @@ struct BoomView: View {
     @State private var lifeCount:Int = 0
     @State private var GameStart:Bool = false
     @State private var showRuleSheet:Bool = false
+    
     var body: some View {
         ZStack {
             GeometryReader { geometry in
@@ -48,56 +50,56 @@ struct BoomView: View {
                     .frame(width: geometry.size.width, height: geometry.size.height)
                     .edgesIgnoringSafeArea(.all) // 确保背景图覆盖整个屏幕
             }
-//            ZStack {
-                ForEach(GetItem) { item in
-                    //itemImage
-                    Image(item.ImageName)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width:ItemWidth,height:ItemHeight)
-                        .position(item.Position)
-                }
-                ZStack {
-                    Text("\(Score)")
-                        .fontWeight(.bold)
-                        .foregroundColor(.red)
-                        .offset(x: 30, y: -350)
-                    Text("現在の体重:   　　     KG")
-                        .fontWeight(.bold)
-                        .offset(y: -350)
-                }
-                .frame(width:UIScreen.main.bounds.width)
-                if StartButton {
-                    VStack {
-                        //rule
-                        Button(action: {
-                            showRuleSheet = true
-                        }) {
-                            Text("ルール紹介")
-                                .padding()
-                                .background(Color.ruleColor)
-                                .cornerRadius(15)
-                        }
-                        Button(action: {
-                            StartButton = false
-                            GameStart = true
-                            //掉落逻辑
-                            gaming()
-                            
-                            //开始计时
-                            
-                        }) {
-                            Text("ゲーム開始")
-                        }
-                        .padding()
-                        .background(Color.startColor)
-                        .cornerRadius(15)
+            ForEach(GetItem) { item in
+                //itemImage
+                Image(item.ImageName)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width:ItemWidth,height:ItemHeight)
+                    .position(item.Position)
+            }
+            ZStack {
+                Text("\(Score)")
+                    .fontWeight(.bold)
+                    .foregroundColor(.red)
+                    .offset(x: 30, y: -350)
+                Text("現在の体重:   　　     KG")
+                    .fontWeight(.bold)
+                    .offset(y: -350)
+            }
+            .frame(width:UIScreen.main.bounds.width)
+            if StartButton {
+                VStack {
+                    //rule
+                    Button(action: {
+                        showRuleSheet = true
+                    }) {
+                        Text("ルール紹介")
+                            .padding()
+                            .background(Color.ruleColor)
+                            .cornerRadius(15)
                     }
-                    .foregroundColor(.white)
+                    Button(action: {
+                        StartButton = false
+                        GameStart = true
+                        //掉落逻辑
+                        gaming()
+                        
+                        //开始计时
+                        
+                    }) {
+                        Text("ゲーム開始")
+                    }
                     .padding()
-                    .background(.clear)
+                    .background(Color.startColor)
                     .cornerRadius(15)
                 }
+                .foregroundColor(.white)
+                .padding()
+                .background(.clear)
+                .cornerRadius(15)
+            }
+            ZStack {
                 Image("bucket")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -114,23 +116,28 @@ struct BoomView: View {
                                 collision()
                             }
                     )
-                HStack {
-                    ForEach(lifeCount..<5,id: \.self) { icon in
-                        Image("bkheart")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width:20)
-                    }
-                    ForEach(0..<lifeCount,id: \.self) { icon in
-                        Image("bkheartblack")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width:20)
-                    }
+                VStack {
+                    Text("\(bmidata.playerName)")
+                    Text("BMI:\(bmidata.playerBmi, specifier: "%.2f")")
                 }
-                .offset(y:-300)
-//            }
-//            .border(.red)
+                .background(.white)
+                .position(x: mainObPositionX.width + dragObPositionX.width,y: mainObPostionY + 40)
+            }
+            HStack {
+                ForEach(lifeCount..<5,id: \.self) { icon in
+                    Image("bkheart")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width:20)
+                }
+                ForEach(0..<lifeCount,id: \.self) { icon in
+                    Image("bkheartblack")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width:20)
+                }
+            }
+            .offset(y:-300)
         }
         .frame(maxWidth: .infinity)
         .frame(maxHeight: .infinity)
@@ -138,19 +145,19 @@ struct BoomView: View {
         .onAppear() {
             screenHeight = UIScreen.main.bounds.height
             deadLine = screenHeight
-            mainObPositionX.width += screenHeight / 4 - mainObFrame / 4
+            mainObPositionX.width += screenHeight / 4 - mainObFrame / 6
         }
         .onDisappear {
             downTimer?.invalidate()
         }
         .sheet(isPresented: $showRuleSheet) {
             BurgerKingRuleView()
-                .presentationDetents([.medium])
+                .presentationDetents([.fraction(0.6)])
         }
     }
     
     private func createItem() {
-        let images = ["hamburger", "poo"]
+        let images = ["hamburger", "poo", "vagetable"]
         let randomX = CGFloat.random(in: 25...(UIScreen.main.bounds.width - ItemWidth/2))
         let randomImage = images.randomElement() ?? "hamburger"
         
@@ -205,6 +212,10 @@ struct BoomView: View {
                 if itemName.ImageName == "hamburger" {
                     Score += 1
                     GetItem.remove(at: index)
+                } else if itemName.ImageName == "vagetable" {
+                    //野菜
+                    Score -= 1
+                    GetItem.remove(at: index)
                 } else {
                     lifeCount += 1
                     GetItem.remove(at: index)
@@ -219,6 +230,8 @@ struct BoomView: View {
             StartButton = true
             GameStart = false
             GetItem.removeAll()
+            Score = 0
+            lifeCount = 0
         }
     }
 }
@@ -237,5 +250,5 @@ extension Color {
 }
 
 #Preview {
-    BoomView()
+    BoomView(bmidata: BmiData())
 }

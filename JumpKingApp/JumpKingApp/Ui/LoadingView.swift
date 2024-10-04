@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct LoadingView: View {
-    //    let words = ["W", "e", "l", "c", "o", "m", "e"]
     let words = ["日", "本", "電", "子", "専", "門", "学", "校"]
     //用于存储已动画显示的字段
     @State private var animatedIndices: [Int] = []
@@ -17,7 +16,7 @@ struct LoadingView: View {
     @State private var TitleOpacity:Double = 0.0
     @State private var WordOpacity:Double = 0.0
     
-    @State private var GoToMenu:Bool = false
+    @State private var GoToInfoView:Bool = false
     
     var body: some View {
         ZStack {
@@ -55,29 +54,22 @@ struct LoadingView: View {
                 .fontWeight(.bold)
                 .foregroundColor(.white)
                 .opacity(TitleOpacity)
-//                Spacer()
-//                Text("李宰赫")
-//                    .font(.body)
-//                    .fontWeight(.bold)
-//                    .foregroundColor(.white)
-//                    .opacity(TitleOpacity)
             }
             .frame(height:UIScreen.main.bounds.height/2)
-//            .border(.red)
         }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5 ) {
                 for index in 0..<words.count {
                     DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.4) {
-                        animatedIndices.append(index) // 每隔0.5秒显示下一个文字
+                        animatedIndices.append(index) // 每隔0.4秒显示下一个文字
                         if words.count == animatedIndices.count {
                             ShowTitle = true
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 withAnimation(.linear(duration:1.5)) {
                                     TitleOpacity += 1.0
                                     if TitleOpacity == 1.0 {
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
-                                            GoToMenu = true
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                            GoToInfoView = true
                                         }
                                     }
                                 }
@@ -87,8 +79,8 @@ struct LoadingView: View {
                 }
             }
         }
-        .fullScreenCover(isPresented: $GoToMenu) {
-            BoomView()
+        .fullScreenCover(isPresented: $GoToInfoView) {
+            PlayerInfoView(bmidata: BmiData())
         }
     }
 }
