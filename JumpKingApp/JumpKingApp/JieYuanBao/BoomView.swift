@@ -17,6 +17,8 @@ let ItemWidth: CGFloat = 50
 let ItemHeight: CGFloat = 50
 
 struct BoomView: View {
+//    @EnvironmentObject var bmidata: BmiData
+    @ObservedObject var bmidata = BmiData.shared
     //加速test
     @State private var SpeedupButton:Bool = false
     
@@ -38,9 +40,17 @@ struct BoomView: View {
     @State private var lifeCount:Int = 0
     @State private var GameStart:Bool = false
     @State private var showRuleSheet:Bool = false
+    
     var body: some View {
         ZStack {
-            //            Color.black.edgesIgnoringSafeArea(.all)
+            GeometryReader { geometry in
+                // 背景图片，调整尺寸
+                Image("bkbg1")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .edgesIgnoringSafeArea(.all) // 确保背景图覆盖整个屏幕
+            }
             ForEach(GetItem) { item in
                 //itemImage
                 Image(item.ImageName)
@@ -54,11 +64,11 @@ struct BoomView: View {
                     .fontWeight(.bold)
                     .foregroundColor(.red)
                     .offset(x: 30, y: -350)
-                Text("現在の体重:        KG")
+                Text("現在の体重:   　　     KG")
                     .fontWeight(.bold)
                     .offset(y: -350)
             }
-            .frame(width:UIScreen.main.bounds.width/2)
+            .frame(width:UIScreen.main.bounds.width)
             if StartButton {
                 VStack {
                     //rule
@@ -90,22 +100,30 @@ struct BoomView: View {
                 .background(.clear)
                 .cornerRadius(15)
             }
-            Image("bucket")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: mainObFrame)
-                .position(x: mainObPositionX.width + dragObPositionX.width,y: mainObPostionY)
-                .gesture(
-                    DragGesture()
-                        .updating($dragObPositionX) { move, value, _ in
-                            value = move.translation
-                            collision()
-                        }
-                        .onEnded { value in
-                            mainObPositionX.width += value.translation.width
-                            collision()
-                        }
-                )
+            ZStack {
+                Image("bucket")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: mainObFrame)
+                    .position(x: mainObPositionX.width + dragObPositionX.width,y: mainObPostionY)
+                    .gesture(
+                        DragGesture()
+                            .updating($dragObPositionX) { move, value, _ in
+                                value = move.translation
+                                collision()
+                            }
+                            .onEnded { value in
+                                mainObPositionX.width += value.translation.width
+                                collision()
+                            }
+                    )
+                VStack {
+                    Text("名前: \(bmidata.playerName)")
+                    Text("BMI: \(bmidata.bmi,specifier: "%.2f")")
+                }
+                .background(.white)
+                .position(x: mainObPositionX.width + dragObPositionX.width,y: mainObPostionY + 40)
+            }
             HStack {
                 ForEach(lifeCount..<5,id: \.self) { icon in
                     Image("bkheart")
@@ -124,23 +142,23 @@ struct BoomView: View {
         }
         .frame(maxWidth: .infinity)
         .frame(maxHeight: .infinity)
-        .border(.gray)
+        .edgesIgnoringSafeArea(.all)
         .onAppear() {
             screenHeight = UIScreen.main.bounds.height
             deadLine = screenHeight
-            mainObPositionX.width += screenHeight / 4 - mainObFrame / 4
+            mainObPositionX.width += screenHeight / 4 - mainObFrame / 6
         }
         .onDisappear {
             downTimer?.invalidate()
         }
         .sheet(isPresented: $showRuleSheet) {
             BurgerKingRuleView()
-                .presentationDetents([.medium])
+                .presentationDetents([.fraction(0.6)])
         }
     }
     
     private func createItem() {
-        let images = ["hamburger", "poo"]
+        let images = ["hamburger", "poo", "vagetable"]
         let randomX = CGFloat.random(in: 25...(UIScreen.main.bounds.width - ItemWidth/2))
         let randomImage = images.randomElement() ?? "hamburger"
         
@@ -195,6 +213,10 @@ struct BoomView: View {
                 if itemName.ImageName == "hamburger" {
                     Score += 1
                     GetItem.remove(at: index)
+                } else if itemName.ImageName == "vagetable" {
+                    //野菜
+                    Score -= 1
+                    GetItem.remove(at: index)
                 } else {
                     lifeCount += 1
                     GetItem.remove(at: index)
@@ -209,6 +231,8 @@ struct BoomView: View {
             StartButton = true
             GameStart = false
             GetItem.removeAll()
+            Score = 0
+            lifeCount = 0
         }
     }
 }
