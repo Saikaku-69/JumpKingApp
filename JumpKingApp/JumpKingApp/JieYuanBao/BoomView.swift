@@ -17,7 +17,8 @@ let ItemWidth: CGFloat = 50
 let ItemHeight: CGFloat = 50
 
 struct BoomView: View {
-    @ObservedObject var bmidata: BmiData
+//    @EnvironmentObject var bmidata: BmiData
+    @ObservedObject var bmidata = BmiData.shared
     //加速test
     @State private var SpeedupButton:Bool = false
     
@@ -117,8 +118,8 @@ struct BoomView: View {
                             }
                     )
                 VStack {
-                    Text("\(bmidata.playerName)")
-                    Text("BMI:\(bmidata.playerBmi, specifier: "%.2f")")
+                    Text("名前: \(bmidata.playerName)")
+                    Text("BMI: \(bmidata.bmi,specifier: "%.2f")")
                 }
                 .background(.white)
                 .position(x: mainObPositionX.width + dragObPositionX.width,y: mainObPostionY + 40)
@@ -250,5 +251,5 @@ extension Color {
 }
 
 #Preview {
-    BoomView(bmidata: BmiData())
+    BoomView()
 }

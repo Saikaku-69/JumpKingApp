@@ -80,7 +80,7 @@ struct LoadingView: View {
             }
         }
         .fullScreenCover(isPresented: $GoToInfoView) {
-            PlayerInfoView(bmidata: BmiData())
+            PlayerInfoView()
         }
     }
 }
