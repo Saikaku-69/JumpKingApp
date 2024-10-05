@@ -17,10 +17,7 @@ let ItemWidth: CGFloat = 50
 let ItemHeight: CGFloat = 50
 
 struct BoomView: View {
-    //    @EnvironmentObject var bmidata: BmiData
     @ObservedObject var bmidata = BmiData.shared
-    //加速test
-    @State private var SpeedupButton:Bool = false
     
     @State private var StartButton:Bool = true
     @State private var GetItem:[Item] = []
@@ -30,7 +27,7 @@ struct BoomView: View {
     @State private var deadLine: CGFloat = 0
     //定时器：用来计算Item降落的动画
     @State private var downTimer: Timer?
-    @State private var realTimeWeight:Int = 0
+    @State private var realTimeWeight:Double = 0.0
     //
     @State private var mainObFrame:CGFloat = 100
     @State private var mainObPositionX: CGSize = .zero
@@ -53,28 +50,28 @@ struct BoomView: View {
     
     var body: some View {
         ZStack {
-//            GeometryReader { geometry in
-//                Image("bkbg1")
-//                    .resizable()
-//                    .aspectRatio(contentMode: .fill)
-//                    .frame(width: geometry.size.width, height: geometry.size.height)
-//                    .edgesIgnoringSafeArea(.all)
-//            }
+            GeometryReader { geometry in
+                Image("bkbg1")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .edgesIgnoringSafeArea(.all)
+            }
             VStack {
                 HStack {
-                    Text("\(bmidata.playerName)の体重:")
-                    Text("\(realTimeWeight)")
+                    Text("あなたの体重:")
+                    Text("\(Int(realTimeWeight))")
                         .foregroundColor(.red)
                     Text("KG")
                 }
                 HStack {
                     Text("BMI:")
-                    Text("\(lastBMI,specifier: "%.2")")
+                    Text("\(bmidata.bmi, specifier: "%.2f")")
+                        .foregroundColor(.red)
                 }
             }
             .fontWeight(.bold)
             .offset(y: -350)
-            .frame(width:UIScreen.main.bounds.width)
             if StartButton {
                 VStack {
                     //rule
@@ -170,9 +167,6 @@ struct BoomView: View {
             screenHeight = UIScreen.main.bounds.height
             deadLine = screenHeight
             mainObPositionX.width += screenHeight / 4 - mainObFrame / 6
-            
-            //入力した体重をこちのViewに代入、ゲーム終了した時また計算する。
-            realTimeWeight = Int(bmidata.weight)
         }
         .onDisappear {
             downTimer?.invalidate()
@@ -182,16 +176,16 @@ struct BoomView: View {
             BurgerKingRuleView()
                 .presentationDetents([.fraction(0.6)])
         }
-//        .alert(isPresented: $GameOverResult) {
-//            Alert(title: Text("ゲーム終了"),
-//                  message: Text("あなたの体重は\(Int(realTimeWeight))KGになりました。\nBMIは\(lastBMI,specifier: "%.2f")"),
-//                  primaryButton: .default(Text("OK")) {
-//                realTimeWeight = 0
-////                mainObPositionX.width = screenHeight / 4 - mainObFrame / 6
-//            },
-//                  secondaryButton: .default(Text("もっとみる")) {
-//            })
-//        }
+        .alert(isPresented: $GameOverResult) {
+            Alert(title: Text("ゲーム終了"),
+                  message: Text(""),
+                  primaryButton: .default(Text("OK")) {
+                realTimeWeight = 0
+                mainObPositionX.width = screenHeight / 4 - mainObFrame / 6
+            },
+                  secondaryButton: .default(Text("もっとみる")) {
+            })
+        }
     }
     
     private func createItem() {

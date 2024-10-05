@@ -59,14 +59,14 @@ struct PlayerInfoView: View {
         .fullScreenCover(isPresented: $MoveToPlay) {
             BoomView()
         }
-//        .onAppear {
-//            // 在出现时可能需要激活键盘
-//            UIApplication.shared.sendAction(#selector(UIResponder.becomeFirstResponder), to: nil, from: nil, for: nil)
-//        }
-//        .onDisappear {
-//            // 在消失时关闭键盘
-//            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-//        }
+        .onAppear {
+            // 在出现时可能需要激活键盘
+            UIApplication.shared.sendAction(#selector(UIResponder.becomeFirstResponder), to: nil, from: nil, for: nil)
+        }
+        .onDisappear {
+            // 在消失时关闭键盘
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
     }
 }
 
