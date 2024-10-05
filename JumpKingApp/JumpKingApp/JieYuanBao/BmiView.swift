@@ -12,4 +12,6 @@ class BmiData: ObservableObject {
     static let shared = BmiData()
     @Published var playerName: String = ""
     @Published var bmi: Double = 0.0
+    @Published var weight: Double = 0.0
+    @Published var height: Double = 0.0
 }
