@@ -17,10 +17,7 @@ let ItemWidth: CGFloat = 50
 let ItemHeight: CGFloat = 50
 
 struct BoomView: View {
-//    @EnvironmentObject var bmidata: BmiData
     @ObservedObject var bmidata = BmiData.shared
-    //加速test
-    @State private var SpeedupButton:Bool = false
     
     @State private var StartButton:Bool = true
     @State private var GetItem:[Item] = []
@@ -30,45 +27,51 @@ struct BoomView: View {
     @State private var deadLine: CGFloat = 0
     //定时器：用来计算Item降落的动画
     @State private var downTimer: Timer?
-    @State private var Score:Int = 0
+    @State private var realTimeWeight:Double = 0.0
     //
     @State private var mainObFrame:CGFloat = 100
     @State private var mainObPositionX: CGSize = .zero
     @GestureState private var dragObPositionX: CGSize = .zero
-    @State private var mainObPostionY: CGFloat = 700
+    @State private var mainObPostionY: CGFloat = UIScreen.main.bounds.height - 100
     
     @State private var lifeCount:Int = 0
     @State private var GameStart:Bool = false
     @State private var showRuleSheet:Bool = false
     
+    //ゲーム時間タイマー
+    @State private var GameTimer: Timer?
+    @State private var GameTimeCount: Double = 60
+    @State private var GameOverResult:Bool = false
+    
+    //ゲーム終了後のBMI計算
+    @State private var lastBMI: Double = 0.0
+    //gesture禁止
+    @State private var GestureStop:Bool = true
+    
     var body: some View {
         ZStack {
             GeometryReader { geometry in
-                // 背景图片，调整尺寸
                 Image("bkbg1")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: geometry.size.width, height: geometry.size.height)
-                    .edgesIgnoringSafeArea(.all) // 确保背景图覆盖整个屏幕
+                    .edgesIgnoringSafeArea(.all)
             }
-            ForEach(GetItem) { item in
-                //itemImage
-                Image(item.ImageName)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width:ItemWidth,height:ItemHeight)
-                    .position(item.Position)
+            VStack {
+                HStack {
+                    Text("あなたの体重:")
+                    Text("\(Int(realTimeWeight))")
+                        .foregroundColor(.red)
+                    Text("KG")
+                }
+                HStack {
+                    Text("BMI:")
+                    Text("\(bmidata.bmi, specifier: "%.2f")")
+                        .foregroundColor(.red)
+                }
             }
-            ZStack {
-                Text("\(Score)")
-                    .fontWeight(.bold)
-                    .foregroundColor(.red)
-                    .offset(x: 30, y: -350)
-                Text("現在の体重:   　　     KG")
-                    .fontWeight(.bold)
-                    .offset(y: -350)
-            }
-            .frame(width:UIScreen.main.bounds.width)
+            .fontWeight(.bold)
+            .offset(y: -350)
             if StartButton {
                 VStack {
                     //rule
@@ -81,13 +84,14 @@ struct BoomView: View {
                             .cornerRadius(15)
                     }
                     Button(action: {
+                        GestureStop = false
                         StartButton = false
                         GameStart = true
                         //掉落逻辑
                         gaming()
                         
                         //开始计时
-                        
+                        GameTime()
                     }) {
                         Text("ゲーム開始")
                     }
@@ -101,28 +105,36 @@ struct BoomView: View {
                 .cornerRadius(15)
             }
             ZStack {
+                Image("SampleChara")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: mainObFrame + 30)
+                    .position(x: mainObPositionX.width + dragObPositionX.width,y: mainObPostionY - 15)
                 Image("bucket")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: mainObFrame)
                     .position(x: mainObPositionX.width + dragObPositionX.width,y: mainObPostionY)
-                    .gesture(
-                        DragGesture()
-                            .updating($dragObPositionX) { move, value, _ in
-                                value = move.translation
-                                collision()
-                            }
-                            .onEnded { value in
-                                mainObPositionX.width += value.translation.width
-                                collision()
-                            }
-                    )
-                VStack {
-                    Text("名前: \(bmidata.playerName)")
-                    Text("BMI: \(bmidata.bmi,specifier: "%.2f")")
-                }
-                .background(.white)
-                .position(x: mainObPositionX.width + dragObPositionX.width,y: mainObPostionY + 40)
+            }
+            .gesture(
+                DragGesture()
+                    .updating($dragObPositionX) { move, value, _ in
+                        value = move.translation
+                        collision()
+                    }
+                    .onEnded { value in
+                        mainObPositionX.width += value.translation.width
+                        collision()
+                    }
+            )
+            .disabled(GestureStop)
+            ForEach(GetItem) { item in
+                //itemImage
+                Image(item.ImageName)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width:ItemWidth,height:ItemHeight)
+                    .position(item.Position)
             }
             HStack {
                 ForEach(lifeCount..<5,id: \.self) { icon in
@@ -139,6 +151,14 @@ struct BoomView: View {
                 }
             }
             .offset(y:-300)
+            
+            //ゲーム時間
+            Gauge(value: GameTimeCount, in: 0...60) {
+                Text("\(Int(GameTimeCount))")
+            }
+            .gaugeStyle(.accessoryCircularCapacity)
+            .tint(Color.red)
+            .offset(x:-140,y:-320)
         }
         .frame(maxWidth: .infinity)
         .frame(maxHeight: .infinity)
@@ -150,10 +170,21 @@ struct BoomView: View {
         }
         .onDisappear {
             downTimer?.invalidate()
+            GameTimer?.invalidate()
         }
         .sheet(isPresented: $showRuleSheet) {
             BurgerKingRuleView()
                 .presentationDetents([.fraction(0.6)])
+        }
+        .alert(isPresented: $GameOverResult) {
+            Alert(title: Text("ゲーム終了"),
+                  message: Text(""),
+                  primaryButton: .default(Text("OK")) {
+                realTimeWeight = 0
+                mainObPositionX.width = screenHeight / 4 - mainObFrame / 6
+            },
+                  secondaryButton: .default(Text("もっとみる")) {
+            })
         }
     }
     
@@ -211,11 +242,11 @@ struct BoomView: View {
             if newMainObjectFrame.intersects(itemRect) {
                 let itemName = GetItem[index]
                 if itemName.ImageName == "hamburger" {
-                    Score += 1
+                    realTimeWeight += 1
                     GetItem.remove(at: index)
                 } else if itemName.ImageName == "vagetable" {
                     //野菜
-                    Score -= 1
+                    realTimeWeight -= 1
                     GetItem.remove(at: index)
                 } else {
                     lifeCount += 1
@@ -227,13 +258,29 @@ struct BoomView: View {
     }
     
     private func GameOver() {
-        if lifeCount == 5 {
+        if lifeCount == 5 || GameTimeCount <= 0 {
+            GestureStop = true
+            GameTimeStop()
+            calculateBMI()
             StartButton = true
             GameStart = false
             GetItem.removeAll()
-            Score = 0
             lifeCount = 0
+            GameTimeCount = 60
+            GameOverResult = true
         }
+    }
+    private func GameTime() {
+        GameTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+            GameTimeCount -= 1
+            GameOver()
+        }
+    }
+    private func GameTimeStop() {
+        GameTimer?.invalidate()
+    }
+    private func calculateBMI() {
+        lastBMI = Double(realTimeWeight) / ((bmidata.height / 100 ) * (bmidata.height / 100))
     }
 }
 
