@@ -87,6 +87,7 @@
 				7F8BDF0B2CA277B00042E165 /* Mode2 */,
 				7F82E0A22CA7240700A20A92 /* Ui */,
 				7FEB857B2CA986280008AD24 /* JieYuanBao */,
+				7F9367392CB3F521001A7A22 /* DoYouEatApp */,
 				7F44111F2C6A5ED500E82C3D /* Assets.xcassets */,
 				7F4411212C6A5ED500E82C3D /* Preview Content */,
 			);
@@ -118,6 +119,29 @@
 				7F82E0A02CA6F68400A20A92 /* CGSizeTestView.swift */,
 			);
 			path = Mode2;
+			sourceTree = "<group>";
+		};
+		7F9367392CB3F521001A7A22 /* DoYouEatApp */ = {
+			isa = PBXGroup;
+			children = (
+				7F93673A2CB3F535001A7A22 /* UiView */,
+				7F93673B2CB3F548001A7A22 /* FeatureView */,
+			);
+			path = DoYouEatApp;
+			sourceTree = "<group>";
+		};
+		7F93673A2CB3F535001A7A22 /* UiView */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = UiView;
+			sourceTree = "<group>";
+		};
+		7F93673B2CB3F548001A7A22 /* FeatureView */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = FeatureView;
 			sourceTree = "<group>";
 		};
 		7FEB857B2CA986280008AD24 /* JieYuanBao */ = {
