@@ -284,6 +284,8 @@ struct BoomView: View {
     private func calculateBMI() {
         lastBMI = Double(realTimeWeight) / ((bmidata.height / 100 ) * (bmidata.height / 100))
     }
+    //結果用BMI
+    
 }
 
 extension Color {
