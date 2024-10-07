@@ -50,13 +50,13 @@ struct BoomView: View {
     
     var body: some View {
         ZStack {
-            GeometryReader { geometry in
-                Image("bkbg1")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
-                    .edgesIgnoringSafeArea(.all)
-            }
+//            GeometryReader { geometry in
+//                Image("bkbg1")
+//                    .resizable()
+//                    .aspectRatio(contentMode: .fit)
+//                    .frame(width: geometry.size.width, height: geometry.size.height)
+//                    .edgesIgnoringSafeArea(.all)
+//            }
             VStack {
                 HStack {
                     Text("あなたの体重:")
