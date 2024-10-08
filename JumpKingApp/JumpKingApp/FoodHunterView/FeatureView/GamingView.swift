@@ -13,10 +13,10 @@ struct Item: Identifiable {
     var ImageName: String
 }
 
-let ItemWidth: CGFloat = 50
-let ItemHeight: CGFloat = 50
+let ItemWidth: CGFloat = 30
+let ItemHeight: CGFloat = 30
 
-struct BoomView: View {
+struct GamingView: View {
     @ObservedObject var bmidata = BmiData.shared
     
     @State private var StartButton:Bool = true
@@ -28,11 +28,11 @@ struct BoomView: View {
     //定时器：用来计算Item降落的动画
     @State private var downTimer: Timer?
     @State private var realTimeWeight:Double = 0.0
-    //
-    @State private var mainObFrame:CGFloat = 100
+    //initial frame = 100,yPosi = 100
+    @State private var mainObFrame:CGFloat = 50
     @State private var mainObPositionX: CGSize = .zero
     @GestureState private var dragObPositionX: CGSize = .zero
-    @State private var mainObPostionY: CGFloat = UIScreen.main.bounds.height - 100
+    @State private var mainObPostionY: CGFloat = UIScreen.main.bounds.height - 120
     
     @State private var lifeCount:Int = 0
     @State private var GameStart:Bool = false
@@ -47,13 +47,14 @@ struct BoomView: View {
     @State private var lastBMI: Double = 0.0
     //gesture禁止
     @State private var GestureStop:Bool = true
+    @State private var buttonPositionX:CGFloat = 0
     
     var body: some View {
         ZStack {
 //            GeometryReader { geometry in
 //                Image("bkbg1")
 //                    .resizable()
-//                    .aspectRatio(contentMode: .fit)
+//                    .aspectRatio(contentMode: .fill)
 //                    .frame(width: geometry.size.width, height: geometry.size.height)
 //                    .edgesIgnoringSafeArea(.all)
 //            }
@@ -69,52 +70,71 @@ struct BoomView: View {
                     Text("\(bmidata.bmi, specifier: "%.2f")")
                         .foregroundColor(.red)
                 }
+                
+                HStack {
+                    ForEach(lifeCount..<5,id: \.self) { icon in
+                        Image("bkheart")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width:20)
+                    }
+                    ForEach(0..<lifeCount,id: \.self) { icon in
+                        Image("bkheartblack")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width:20)
+                    }
+                }
             }
             .fontWeight(.bold)
-            .offset(y: -350)
+            .offset(y: -330)
             if StartButton {
                 VStack {
+                    
                     //rule
                     Button(action: {
                         showRuleSheet = true
                     }) {
                         Text("ルール紹介")
-                            .padding()
-                            .background(Color.ruleColor)
-                            .cornerRadius(15)
                     }
+                    .padding()
+                    .background(Color.ruleColor)
+                    .cornerRadius(15)
+                    .offset(x:buttonPositionX)
+                    
                     Button(action: {
+                        buttonAnimation()
                         GestureStop = false
-                        StartButton = false
                         GameStart = true
-                        //掉落逻辑
-                        gaming()
-                        
-                        //开始计时
-                        GameTime()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                            StartButton = false
+                            //掉落逻辑
+                            gaming()
+                            GameTime()
+                        }
                     }) {
                         Text("ゲーム開始")
                     }
                     .padding()
                     .background(Color.startColor)
                     .cornerRadius(15)
+                    .offset(x:-buttonPositionX)
+                    
                 }
                 .foregroundColor(.white)
-                .padding()
-                .background(.clear)
-                .cornerRadius(15)
             }
             ZStack {
-                Image("SampleChara")
+                Image("MouseMan")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: mainObFrame + 30)
-                    .position(x: mainObPositionX.width + dragObPositionX.width,y: mainObPostionY - 15)
+                    .position(x: mainObPositionX.width + dragObPositionX.width + 15,y: mainObPostionY - 15)
                 Image("bucket")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: mainObFrame)
                     .position(x: mainObPositionX.width + dragObPositionX.width,y: mainObPostionY)
+                    .opacity(0)
             }
             .gesture(
                 DragGesture()
@@ -136,28 +156,12 @@ struct BoomView: View {
                     .frame(width:ItemWidth,height:ItemHeight)
                     .position(item.Position)
             }
-            HStack {
-                ForEach(lifeCount..<5,id: \.self) { icon in
-                    Image("bkheart")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width:20)
-                }
-                ForEach(0..<lifeCount,id: \.self) { icon in
-                    Image("bkheartblack")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width:20)
-                }
-            }
-            .offset(y:-300)
-            
             //ゲーム時間
             Gauge(value: GameTimeCount, in: 0...60) {
                 Text("\(Int(GameTimeCount))")
             }
             .gaugeStyle(.accessoryCircularCapacity)
-            .tint(Color.red)
+            .tint(Color.blue)
             .offset(x:-140,y:-320)
         }
         .frame(maxWidth: .infinity)
@@ -166,7 +170,7 @@ struct BoomView: View {
         .onAppear() {
             screenHeight = UIScreen.main.bounds.height
             deadLine = screenHeight
-            mainObPositionX.width += screenHeight / 4 - mainObFrame / 6
+            mainObPositionX.width += screenHeight / 4 - mainObFrame / 2
             
             realTimeWeight = bmidata.weight
         }
@@ -175,14 +179,13 @@ struct BoomView: View {
             GameTimer?.invalidate()
         }
         .sheet(isPresented: $showRuleSheet) {
-            BurgerKingRuleView()
-                .presentationDetents([.fraction(0.6)])
+            GameRuleView()
+                .presentationDetents([.fraction(0.5)])
         }
         .alert(isPresented: $GameOverResult) {
             Alert(title: Text("ゲーム終了"),
                   message: Text(""),
                   primaryButton: .default(Text("OK")) {
-                realTimeWeight = 0
                 mainObPositionX.width = screenHeight / 4 - mainObFrame / 6
             },
                   secondaryButton: .default(Text("もっとみる")) {
@@ -191,7 +194,7 @@ struct BoomView: View {
     }
     
     private func createItem() {
-        let images = ["hamburger", "poo", "vagetable"]
+        let images = ["hamburger", "poo", "vagetable","french"]
         let randomX = CGFloat.random(in: 25...(UIScreen.main.bounds.width - ItemWidth/2))
         let randomImage = images.randomElement() ?? "hamburger"
         
@@ -231,7 +234,7 @@ struct BoomView: View {
     
     private func collision() {
         let newMainObjectPosition = CGPoint(x: mainObPositionX.width + dragObPositionX.width, y: mainObPostionY)
-        let newMainObjectFrame = CGRect( x:newMainObjectPosition.x - 50,
+        let newMainObjectFrame = CGRect( x:newMainObjectPosition.x - 30,
                                          y:newMainObjectPosition.y,
                                          width: mainObFrame,
                                          height: 1)
@@ -244,11 +247,14 @@ struct BoomView: View {
             if newMainObjectFrame.intersects(itemRect) {
                 let itemName = GetItem[index]
                 if itemName.ImageName == "hamburger" {
-                    realTimeWeight += 1
+                    realTimeWeight += 2
                     GetItem.remove(at: index)
                 } else if itemName.ImageName == "vagetable" {
                     //野菜
                     realTimeWeight -= 1
+                    GetItem.remove(at: index)
+                } else if itemName.ImageName == "french" {
+                    realTimeWeight += 1
                     GetItem.remove(at: index)
                 } else {
                     lifeCount += 1
@@ -264,6 +270,7 @@ struct BoomView: View {
             GestureStop = true
             GameTimeStop()
             calculateBMI()
+            buttonPositionX = 0
             StartButton = true
             GameStart = false
             GetItem.removeAll()
@@ -286,6 +293,12 @@ struct BoomView: View {
     }
     //結果用BMI
     
+    
+    private func buttonAnimation() {
+        withAnimation(.easeOut(duration:0.5)) {
+            buttonPositionX += 300
+        }
+    }
 }
 
 extension Color {
@@ -302,5 +315,5 @@ extension Color {
 }
 
 #Preview {
-    BoomView()
+    GamingView()
 }
