@@ -34,7 +34,7 @@ struct OpennnigView: View {
                     Text("D")
                         .rotationEffect(Angle(degrees: 25), anchor: .leading)
                 }
-                    .font(.system(size:50))
+                .font(.system(size:50))
                 Text(" HUNTER")
                     .font(.system(size:30))
             }
@@ -65,9 +65,9 @@ struct OpennnigView: View {
         }
     }
     private func loadingBarPlus() {
-            withAnimation(.linear(duration: 10)) {
-                loadingBar += 10
-            }
+        withAnimation(.linear(duration: 10)) {
+            loadingBar += 10
+        }
     }
 }
 
