@@ -26,7 +26,6 @@ struct LoadingView: View {
                 VStack {
                     if firstTitle {
                         Text("日本電子専門学校")
-                        
                     }
                     if secondTitle {
                         Text("日専祭")
