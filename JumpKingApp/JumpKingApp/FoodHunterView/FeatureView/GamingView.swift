@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct Item: Identifiable {
     var id = UUID()
@@ -44,11 +45,13 @@ struct GamingView: View {
     @State private var GameOverResult:Bool = false
     
     //ゲーム終了後のBMI計算
-    @State private var lastBMI: Double = 0.0
+    @State private var newBMI: Double = 0.0
     //gesture禁止
     @State private var GestureStop:Bool = true
     @State private var buttonPositionX:CGFloat = 0
-    
+    @State private var ResetData:Bool = true
+    @State private var moveToInfoView:Bool = false
+    @State private var bmiResultMessage = ""
     var body: some View {
         ZStack {
 //            GeometryReader { geometry in
@@ -67,7 +70,9 @@ struct GamingView: View {
                 }
                 HStack {
                     Text("BMI:")
-                    Text("\(bmidata.bmi, specifier: "%.2f")")
+//                    Text("\(bmidata.bmi, specifier: "%.2f")")
+//                        .foregroundColor(.red)
+                    Text("\(newBMI, specifier: "%.2f")")
                         .foregroundColor(.red)
                 }
                 
@@ -106,6 +111,7 @@ struct GamingView: View {
                         buttonAnimation()
                         GestureStop = false
                         GameStart = true
+                        ResetData = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                             StartButton = false
                             //掉落逻辑
@@ -168,6 +174,16 @@ struct GamingView: View {
             .gaugeStyle(.accessoryCircularCapacity)
             .tint(Color.blue)
             .offset(x:-140,y:-320)
+            
+            if ResetData {
+                Button(action: {
+                    moveToInfoView = true
+                }) {
+                    Image(systemName:"arrow.circlepath")
+                }
+                .font(.system(size:30))
+                .offset(x:140,y:-320)
+            }
         }
         .frame(maxWidth: .infinity)
         .frame(maxHeight: .infinity)
@@ -178,6 +194,7 @@ struct GamingView: View {
             mainObPositionX.width += screenHeight / 4 - mainObFrame / 2
             
             realTimeWeight = bmidata.weight
+            calculateBMI()
         }
         .onDisappear {
             downTimer?.invalidate()
@@ -189,12 +206,16 @@ struct GamingView: View {
         }
         .alert(isPresented: $GameOverResult) {
             Alert(title: Text("ゲーム終了"),
-                  message: Text(""),
+                  message: Text("おめでとうございます！\n\(bmidata.playerName)さんは\(bmiResultMessage)です"),
                   primaryButton: .default(Text("OK")) {
+                ResetData = true
                 mainObPositionX.width = screenHeight / 4 - mainObFrame / 6
             },
                   secondaryButton: .default(Text("もっとみる")) {
             })
+        }
+        .fullScreenCover(isPresented: $moveToInfoView) {
+            PlayerInfoView()
         }
     }
     
@@ -252,16 +273,24 @@ struct GamingView: View {
             if newMainObjectFrame.intersects(itemRect) {
                 let itemName = GetItem[index]
                 if itemName.ImageName == "hamburger" {
+                    calculateBMI()
+                    generateImpactFeedback(for: .light)
                     realTimeWeight += 2
                     GetItem.remove(at: index)
                 } else if itemName.ImageName == "vagetable" {
+                    calculateBMI()
+                    generateErrorFeedback()
                     //野菜
                     realTimeWeight -= 1
                     GetItem.remove(at: index)
                 } else if itemName.ImageName == "french" {
+                    calculateBMI()
+                    generateImpactFeedback(for: .light)
                     realTimeWeight += 1
                     GetItem.remove(at: index)
                 } else {
+                    calculateBMI()
+                    generateImpactFeedback(for: .heavy)
                     lifeCount += 1
                     GetItem.remove(at: index)
                     GameOver()
@@ -272,9 +301,10 @@ struct GamingView: View {
     
     private func GameOver() {
         if lifeCount == 5 || GameTimeCount <= 0 {
+            calculateBMI()
+            bmiResultMessage = bmiResult()
             GestureStop = true
             GameTimeStop()
-            calculateBMI()
             buttonPositionX = 0
             StartButton = true
             GameStart = false
@@ -293,16 +323,49 @@ struct GamingView: View {
     private func GameTimeStop() {
         GameTimer?.invalidate()
     }
-    private func calculateBMI() {
-        lastBMI = Double(realTimeWeight) / ((bmidata.height / 100 ) * (bmidata.height / 100))
-    }
     //結果用BMI
-    
+    private func calculateBMI() {
+        newBMI = Double(realTimeWeight) / ((bmidata.height / 100 ) * (bmidata.height / 100))
+    }
+    //BMI公式による健康状態を表すMethod {
+    private func bmiResult() -> String {
+        if newBMI >= 40 {
+           return "肥満(3度)"
+        } else if newBMI >= 35 {
+            return "肥満(2度)"
+        } else if newBMI >= 30 {
+            return "肥満(1度)"
+        } else if newBMI >= 25 {
+            return "前肥満"
+        } else if newBMI >= 18.5 {
+            return "普通体重"
+        } else if newBMI >= 17 {
+            return "痩せぎみ"
+        } else if newBMI >= 16 {
+            return "痩せ"
+        } else {
+            return "痩せすぎ"
+        }
+    }
     
     private func buttonAnimation() {
         withAnimation(.easeOut(duration:0.5)) {
             buttonPositionX += 300
         }
+    }
+    //振動テスト
+    func generateImpactFeedback(for style: UIImpactFeedbackGenerator.FeedbackStyle) {
+        let feedbackGenerator = UIImpactFeedbackGenerator(style: style)
+        feedbackGenerator.prepare()
+        feedbackGenerator.impactOccurred()
+    }
+    //error调用在vegetable
+    func generateErrorFeedback() {
+        let feedbackGenerator = UINotificationFeedbackGenerator()
+        feedbackGenerator.prepare()
+        // 类型有 .success .error 和 .warning
+        //分别对应通知,错误和警告
+        feedbackGenerator.notificationOccurred(.error)
     }
 }
 
