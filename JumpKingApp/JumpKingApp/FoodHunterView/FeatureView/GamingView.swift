@@ -134,11 +134,11 @@ struct GamingView: View {
                 .foregroundColor(.white)
             }
             ZStack {
-                Image("MouseMan")
+                Image("ManChar")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: mainObFrame + 30)
-                    .position(x: mainObPositionX.width + dragObPositionX.width + 15,y: mainObPostionY - 15)
+                    .position(x: mainObPositionX.width + dragObPositionX.width + 15,y: mainObPostionY + 20)
                 Image("bucket")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
