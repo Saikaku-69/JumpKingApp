@@ -52,6 +52,8 @@ struct GamingView: View {
     @State private var ResetData:Bool = true
     @State private var moveToInfoView:Bool = false
     @State private var bmiResultMessage = ""
+    
+    @State private var syokuFont: CGFloat = UIScreen.main.bounds.width
     var body: some View {
         ZStack {
 //            GeometryReader { geometry in
@@ -61,6 +63,8 @@ struct GamingView: View {
 //                    .frame(width: geometry.size.width, height: geometry.size.height)
 //                    .edgesIgnoringSafeArea(.all)
 //            }
+//            Text("食")
+//                .font(.system(size:syokuFont))
             VStack {
                 HStack {
                     Text("あなたの体重:")
