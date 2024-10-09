@@ -54,6 +54,7 @@ struct GamingView: View {
     @State private var bmiResultMessage = ""
     
     @State private var syokuFont: CGFloat = UIScreen.main.bounds.width
+    
     var body: some View {
         ZStack {
 //            GeometryReader { geometry in
