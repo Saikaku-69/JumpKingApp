@@ -52,6 +52,12 @@ struct GamingView: View {
     @State private var ResetData:Bool = true
     @State private var moveToInfoView:Bool = false
     @State private var bmiResultMessage = ""
+    
+//    let countDownTime = ["3","2","1"]
+//    @State private var countDownIndex = 0
+//    @State private var countTimeSize: CGFloat = 50
+//    @State private var textVisible:Bool = true
+    
     var body: some View {
         ZStack {
 //            GeometryReader { geometry in
@@ -77,7 +83,7 @@ struct GamingView: View {
                 }
                 
                 HStack {
-                    ForEach(lifeCount..<5,id: \.self) { icon in
+                    ForEach(lifeCount..<1,id: \.self) { icon in
                         Image("bkheart")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -93,9 +99,13 @@ struct GamingView: View {
             }
             .fontWeight(.bold)
             .offset(y: -330)
+            //倒数之后开始生成item
+//            if textVisible {
+//                Text(countDownTime[countDownIndex])
+//                    .font(.system(size: countTimeSize))
+//            }
             if StartButton {
                 VStack {
-                    
                     //rule
                     Button(action: {
                         showRuleSheet = true
@@ -126,20 +136,17 @@ struct GamingView: View {
                     .cornerRadius(15)
                     .offset(x:-buttonPositionX)
                     
+//                    Image(systemName:"align.vertical.bottom")
+//                        .foregroundColor(.blue)
                 }
                 .foregroundColor(.white)
             }
             ZStack {
-                Rectangle()
-                    .fill(.clear)
-                    .frame(width:mainObFrame * 3,height:mainObFrame * 3)
-//                    .border(.black)
-                    .position(x: mainObPositionX.width + dragObPositionX.width + 15,y: mainObPostionY - 15)
-                Image("MouseMan")
+                Image("ManChar")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: mainObFrame + 30)
-                    .position(x: mainObPositionX.width + dragObPositionX.width + 15,y: mainObPostionY - 15)
+                    .position(x: mainObPositionX.width + dragObPositionX.width + 15,y: mainObPostionY + 20)
                 Image("bucket")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -189,12 +196,26 @@ struct GamingView: View {
         .frame(maxHeight: .infinity)
         .edgesIgnoringSafeArea(.all)
         .onAppear() {
+//            startCountDown()
             screenHeight = UIScreen.main.bounds.height
             deadLine = screenHeight
             mainObPositionX.width += screenHeight / 4 - mainObFrame / 2
             
             realTimeWeight = bmidata.weight
             calculateBMI()
+            
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+////                buttonAnimation()
+//                GestureStop = false
+//                GameStart = true
+//                ResetData = false
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+//                    StartButton = false
+//                    //掉落逻辑
+//                    gaming()
+//                    GameTime()
+//                }
+//            }
         }
         .onDisappear {
             downTimer?.invalidate()
@@ -206,10 +227,12 @@ struct GamingView: View {
         }
         .alert(isPresented: $GameOverResult) {
             Alert(title: Text("ゲーム終了"),
-                  message: Text("おめでとうございます！\n\(bmidata.playerName)さんは\(bmiResultMessage)です"),
+                  message: Text(""),
                   primaryButton: .default(Text("OK")) {
                 ResetData = true
                 mainObPositionX.width = screenHeight / 4 - mainObFrame / 6
+//                textVisible = true
+//                startCountDown()
             },
                   secondaryButton: .default(Text("もっとみる")) {
             })
@@ -300,7 +323,7 @@ struct GamingView: View {
     }
     
     private func GameOver() {
-        if lifeCount == 5 || GameTimeCount <= 0 {
+        if lifeCount == 1 || GameTimeCount <= 0 {
             calculateBMI()
             bmiResultMessage = bmiResult()
             GestureStop = true
@@ -312,6 +335,7 @@ struct GamingView: View {
             lifeCount = 0
             GameTimeCount = 60
             GameOverResult = true
+//            countDownIndex = 0
         }
     }
     private func GameTime() {
@@ -367,6 +391,30 @@ struct GamingView: View {
         //分别对应通知,错误和警告
         feedbackGenerator.notificationOccurred(.error)
     }
+    
+//    private func startCountDown() {
+//        for i in 0..<countDownTime.count {
+//            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i)) {
+//                    countDownIndex = i
+////                    countTimeSizeAction()
+//                if countDownIndex == countDownTime.count - 1 {
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//                        textVisible = false
+//                    }
+//                }
+//            }
+//        }
+//    }
+    
+//    private func countTimeSizeAction() {
+//            withAnimation(.linear(duration: 1)) {
+//                countTimeSize -= 50
+//            }
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//                countTimeSize = 50
+//                countTimeSizeAction()
+//            }
+//    }
 }
 
 extension Color {
@@ -375,6 +423,7 @@ extension Color {
             Color(hue: 0.5, saturation: 0.3, brightness: 0.8)
         )
     }
+    
     static var startColor:Color {
         return Color(
             Color(hue: 0.6, saturation: 0.8, brightness: 0.6)

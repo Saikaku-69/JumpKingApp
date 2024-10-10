@@ -83,6 +83,14 @@ struct PlayerInfoView: View {
                         }
                     
                     Button(action: {
+                        Height = String(Int.random(in: 150...180))
+                        Weight = String(Int.random(in: 50...80))
+                    }) {
+                        Text("ランダム")
+                    }
+                    .padding(.top)
+                    
+                    Button(action: {
                         bmidata.playerName = Name
                         let bmi = Double(Weight)! / ((Double(Height)! / 100 ) * (Double(Height)! / 100))
                         bmidata.bmi = bmi
@@ -92,6 +100,7 @@ struct PlayerInfoView: View {
                     }) {
                         Text("遊びに行く")
                     }
+                    .padding(.top)
                     .disabled(Height.isEmpty || Weight.isEmpty)
                     
                 }
