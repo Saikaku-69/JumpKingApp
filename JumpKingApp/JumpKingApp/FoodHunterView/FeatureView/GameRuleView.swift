@@ -49,7 +49,7 @@ struct GameRuleView: View {
                 }
                 
                 HStack(spacing:0) {
-                    Text("ア\nイ\nテ\nム\n紹\n介")
+                    Text("ア\nイ\nテ\nム")
                         .padding(5)
                         .background(Color.itemColor)
                         .cornerRadius(15)
