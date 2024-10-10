@@ -24,15 +24,15 @@ struct GameStoryView: View {
                 .opacity(fontOpacity1)
                     Spacer()
                 HStack {
-                    Text("食って..")
-                    Text("食って..")
+                    Text("食って..　　　　")
                 }
+                .font(.system(size:UIScreen.main.bounds.width/10))
                 .opacity(fontOpacity2)
                 Spacer()
                 Text("そして!")
                     .opacity(fontOpacity3)
                 Spacer()
-                Text("「最強のデブ」")
+                Text("「伝説のデブ」")
                     .font(.system(size:UIScreen.main.bounds.width/7))
                     .opacity(fontOpacityTitle)
                     .padding(.bottom,10)
