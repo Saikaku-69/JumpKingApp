@@ -53,10 +53,10 @@ struct GamingView: View {
     @State private var moveToInfoView:Bool = false
     @State private var bmiResultMessage = ""
     
-    let countDownTime = ["3","2","1"]
-    @State private var countDownIndex = 0
-    @State private var countTimeSize: CGFloat = 50
-    @State private var textVisible:Bool = true
+//    let countDownTime = ["3","2","1"]
+//    @State private var countDownIndex = 0
+//    @State private var countTimeSize: CGFloat = 50
+//    @State private var textVisible:Bool = true
     
     var body: some View {
         ZStack {
@@ -83,7 +83,7 @@ struct GamingView: View {
                 }
                 
                 HStack {
-                    ForEach(lifeCount..<5,id: \.self) { icon in
+                    ForEach(lifeCount..<1,id: \.self) { icon in
                         Image("bkheart")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -99,7 +99,7 @@ struct GamingView: View {
             }
             .fontWeight(.bold)
             .offset(y: -330)
-//            //倒数之后开始生成item
+            //倒数之后开始生成item
 //            if textVisible {
 //                Text(countDownTime[countDownIndex])
 //                    .font(.system(size: countTimeSize))
@@ -203,10 +203,18 @@ struct GamingView: View {
             
             realTimeWeight = bmidata.weight
             calculateBMI()
+            
 //            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+////                buttonAnimation()
 //                GestureStop = false
-//                gaming()
-//                GameTime()
+//                GameStart = true
+//                ResetData = false
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+//                    StartButton = false
+//                    //掉落逻辑
+//                    gaming()
+//                    GameTime()
+//                }
 //            }
         }
         .onDisappear {
@@ -219,10 +227,12 @@ struct GamingView: View {
         }
         .alert(isPresented: $GameOverResult) {
             Alert(title: Text("ゲーム終了"),
-                  message: Text("おめでとうございます！\n\(bmidata.playerName)さんは\(bmiResultMessage)です"),
+                  message: Text(""),
                   primaryButton: .default(Text("OK")) {
                 ResetData = true
                 mainObPositionX.width = screenHeight / 4 - mainObFrame / 6
+//                textVisible = true
+//                startCountDown()
             },
                   secondaryButton: .default(Text("もっとみる")) {
             })
@@ -313,7 +323,7 @@ struct GamingView: View {
     }
     
     private func GameOver() {
-        if lifeCount == 5 || GameTimeCount <= 0 {
+        if lifeCount == 1 || GameTimeCount <= 0 {
             calculateBMI()
             bmiResultMessage = bmiResult()
             GestureStop = true
@@ -325,6 +335,7 @@ struct GamingView: View {
             lifeCount = 0
             GameTimeCount = 60
             GameOverResult = true
+//            countDownIndex = 0
         }
     }
     private func GameTime() {
@@ -393,7 +404,6 @@ struct GamingView: View {
 //                }
 //            }
 //        }
-//        
 //    }
     
 //    private func countTimeSizeAction() {
