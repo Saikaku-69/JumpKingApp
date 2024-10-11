@@ -1,5 +1,5 @@
 //
-//  BoomView.swift
+//  GamingView.swift
 //  JumpKingApp
 //
 //  Created by cmStudent on 2024/10/02.
@@ -8,55 +8,69 @@
 import SwiftUI
 import UIKit
 
+//itemの構造体を定義
 struct Item: Identifiable {
     var id = UUID()
-    var Position: CGPoint
-    var ImageName: String
+    var position: CGPoint
+    var imageName: String
+    
+    //Itemの大きさを定義する
+    static let itemWidth: CGFloat = 30
+    static let itemHeight: CGFloat = 30
 }
 
-let ItemWidth: CGFloat = 30
-let ItemHeight: CGFloat = 30
 
 struct GamingView: View {
-    @ObservedObject var bmidata = BmiData.shared
-    
-    @State private var StartButton:Bool = true
+    //基本情報のデータを取得し、bmiDataとして定義する
+    @ObservedObject var bmiData = BmiData.shared
+    //falseになるとカウントダウンしてゲーム開始する
+    @State private var startButton:Bool = true
     @State private var GetItem:[Item] = []
-    @State private var ItemCreatePositionY:CGFloat = 25
-    //设置屏幕高度用判定deadline
+    //item生成時の高さ
+    @State private var itemCreatePositionY:CGFloat = 25
+    //スクリーンの高さとItemが消えるのを判定するラインを初期化する
     @State private var screenHeight: CGFloat = 0
     @State private var deadLine: CGFloat = 0
-    //定时器：用来计算Item降落的动画
+    //itemが落下するAnimationために使うタイマー
     @State private var downTimer: Timer?
+    //このViewで使う体重を初期化する
     @State private var realTimeWeight:Double = 0.0
-    //initial frame = 100,yPosi = 100
+    //mainObjectの大きさを定義する
     @State private var mainObFrame:CGFloat = 50
+    //mainObjectのポジションXとYを定義する
     @State private var mainObPositionX: CGSize = .zero
-    @GestureState private var dragObPositionX: CGSize = .zero
     @State private var mainObPostionY: CGFloat = UIScreen.main.bounds.height - 120
-    
-    @State private var lifeCount:Int = 0
-    @State private var GameStart:Bool = false
-    
-    //ゲーム時間タイマー
-    @State private var GameTimer: Timer?
-    @State private var GameTimeCount: Double = 60
-    @State private var GameOverResult:Bool = false
-    
-    //ゲーム終了後のBMI計算
+    //移動のために使う偏差値をzeroで初期化する
+    @GestureState private var dragObPositionX: CGSize = .zero
+    //生命数を初期化する
+    @State private var totalLife:Int = 1
+    //Lifeの値を初期化する
+//    @State private var lifeCount:Int = 0
+    //trueになるとItem生成開始
+    @State private var gameStarted:Bool = false
+    //ゲーム時間をカウントするタイマー&ゲーム時間を60秒に初期化
+    @State private var gameTimer: Timer?
+    @State private var gameTimeCount: Double = 60
+    //trueになるとアラートでゲーム結果を出す
+    @State private var gameOverResult:Bool = false
+    //ゲーム終了後のBMI計算ために初期化
     @State private var newBMI: Double = 0.0
-    //gesture禁止
-    @State private var GestureStop:Bool = true
-    @State private var buttonPositionX:CGFloat = 0
-    @State private var ResetData:Bool = true
+    //mainObject移動の禁止
+    @State private var gestureStop:Bool = true
+    //基本情報入力画面に遷移用ボタンのFlag
+    @State private var resetButton:Bool = true
+    //基本情報入力画面に遷移用のFlag
     @State private var moveToInfoView:Bool = false
+    //計算したBMIをString型のキャスト
     @State private var bmiResultMessage = ""
-    
+    //カウントダウン用の配列を定義する
     let countDownArray = ["3","2","1"]
+    //配列をカウントするために0として初期化
     @State private var countDownIndex = 0
     
     var body: some View {
         ZStack {
+            //GeometryReader 可以获取父视图的尺寸信息，可以根据可用空间动态调整图片的大小，使其适应不同尺寸的设备。
 //            GeometryReader { geometry in
 //                Image("bkbg1")
 //                    .resizable()
@@ -64,42 +78,46 @@ struct GamingView: View {
 //                    .frame(width: geometry.size.width, height: geometry.size.height)
 //                    .edgesIgnoringSafeArea(.all)
 //            }
+            //体重&BMI&生命数をVStackで並んで、表示する場所を定義
             VStack {
+                //体重を表すテキスト
                 HStack {
                     Text("あなたの体重:")
                     Text("\(Int(realTimeWeight))")
                         .foregroundColor(.red)
                     Text("KG")
                 }
+                //BMIを表すテキスト
                 HStack {
                     Text("BMI:")
                     Text("\(newBMI, specifier: "%.2f")")
                         .foregroundColor(.red)
                 }
-                
-                HStack {
-                    ForEach(lifeCount..<1,id: \.self) { icon in
-                        Image("bkheart")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width:20)
-                    }
-                    ForEach(0..<lifeCount,id: \.self) { icon in
-                        Image("bkheartblack")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width:20)
-                    }
-                }
+                //生命数を表示
+//                HStack {
+//                    ForEach(0..<lifeCount,id: \.self) { icon in
+//                        Image("bkheartblack")
+//                            .resizable()
+//                            .aspectRatio(contentMode: .fit)
+//                            .frame(width:20)
+//                    }
+//                    ForEach(lifeCount..<(totalLife - lifeCount),id: \.self) { icon in
+//                        Image("bkheart")
+//                            .resizable()
+//                            .aspectRatio(contentMode: .fit)
+//                            .frame(width:20)
+//                    }
+//                }
             }
             .fontWeight(.bold)
             .offset(y: -330)
-            //倒数之后开始生成item
-            if StartButton {
-                    Text(countDownArray[countDownIndex])
+            //カウントダウンを表示用のFlag
+            if startButton {
+                Text(countDownArray[countDownIndex])
                     .font(.largeTitle)
                     .fontWeight(.bold)
             }
+            //mainObject用のイメージ
             ZStack {
                 Image("ManChar")
                     .resizable()
@@ -111,8 +129,9 @@ struct GamingView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: mainObFrame)
                     .position(x: mainObPositionX.width + dragObPositionX.width,y: mainObPostionY)
-                    .opacity(1.0)
+                    .opacity(0)
             }
+            //mainObjectとdragして移動する
             .gesture(
                 DragGesture()
                     .updating($dragObPositionX) { move, value, _ in
@@ -124,24 +143,26 @@ struct GamingView: View {
                         collision()
                     }
             )
-            .disabled(GestureStop)
+            //決めた条件のみ移動可能にする
+            .disabled(gestureStop)
+            //GetIemにあるItemをForEachで出す
             ForEach(GetItem) { item in
-                //itemImage
-                Image(item.ImageName)
+                Image(item.imageName)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width:ItemWidth,height:ItemHeight)
-                    .position(item.Position)
+                    .frame(width:Item.itemWidth,height:Item.itemHeight)
+                    .position(item.position)
             }
-            //ゲーム時間
-            Gauge(value: GameTimeCount, in: 0...60) {
-                Text("\(Int(GameTimeCount))")
+            //ゲーム時間をゲージで表す
+            Gauge(value: gameTimeCount, in: 0...60) {
+                Text("\(Int(gameTimeCount))")
             }
+            //円の形にする
             .gaugeStyle(.accessoryCircularCapacity)
             .tint(Color.blue)
             .offset(x:-140,y:-320)
-            
-            if ResetData {
+            //基本情報の画面に遷移するボタン
+            if resetButton {
                 Button(action: {
                     moveToInfoView = true
                 }) {
@@ -151,162 +172,191 @@ struct GamingView: View {
                 .offset(x:140,y:-320)
             }
         }
-        .frame(maxWidth: .infinity)
-        .frame(maxHeight: .infinity)
+        //設備の大きさにより変化
+        .frame(maxWidth: .infinity,maxHeight: .infinity)
+        //設備の全画面を使用
         .edgesIgnoringSafeArea(.all)
+        //この画面を開いた時に行う処理
         .onAppear() {
+            //画面の高さを変数に代入する
             screenHeight = UIScreen.main.bounds.height
+            //消える判定ラインを画面の高さにする
             deadLine = screenHeight
-            realTimeWeight = bmidata.weight
-            //
+            //入力した体重の値をrealTimeWeight変数に代入
+            realTimeWeight = bmiData.weight
+            //mainObjectのポジションを真ん中に初期化
             mainObPositionX.width += screenHeight / 4 - mainObFrame / 2
+            //入力したデータで計算BMIを計算する
             calculateBMI()
-            gameStart()
+            //ゲームが始めるための準備
+            startGame()
+            //カウントダウン開始
             startCountDown()
         }
+        //画面が消える時に行う処理
         .onDisappear {
+            //全てのタイマーを停止
             downTimer?.invalidate()
-            GameTimer?.invalidate()
+            gameTimer?.invalidate()
         }
-        .alert(isPresented: $GameOverResult) {
+        //ゲーム終了したら行う処理
+        .alert(isPresented: $gameOverResult) {
             Alert(title: Text("ゲーム終了"),
-                  message: Text(""),
-                  primaryButton: .default(Text("OK")) {
-                ResetData = true
-//                mainObPositionX.width = screenHeight / 4 - mainObFrame / 6
-                countDownIndex = 0
-                gameStart()
-                startCountDown()
+                  message: Text("なし"),
+                  primaryButton: .default(Text("もう一度")) {
+                initialGame()
             },
                   secondaryButton: .default(Text("もっとみる")) {
-                moveToInfoView = true
             })
         }
         .fullScreenCover(isPresented: $moveToInfoView) {
             PlayerInfoView()
         }
     }
-    
+    private func initialGame() {
+        //リット
+        gameTimeCount = 60
+        countDownIndex = 0
+        startButton = true
+        startCountDown()
+        startGame()
+//        lifeCount = 0
+        mainObPositionX.width = UIScreen.main.bounds.width/2
+    }
+    //BMI公式
+    private func calculateBMI() {
+        newBMI = Double(realTimeWeight) / ((bmiData.height / 100 ) * (bmiData.height / 100))
+    }
+    //ゲーム開始を処理
+    private func startGame() {
+        //まずは(情報)リセットボタンを隠す
+        resetButton = false
+        //mainObject移動できるようにする
+        gestureStop = false
+        //trueになったらItem生成する
+        gameStarted = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            //3秒後にカウントダウンTextを隠す
+            startButton = false
+            gaming()
+            gameTime()
+        }
+    }
+    //itemで生成する画像をランダムで代入、ポジションXの範囲を定義
+    //GetItem構造体を使ったnewItemとして生成する
     private func createItem() {
         let images = ["hamburger", "poo", "vagetable","french"]
-        let randomX = CGFloat.random(in: 25...(UIScreen.main.bounds.width - ItemWidth/2))
         let randomImage = images.randomElement() ?? "hamburger"
+        let randomX = CGFloat.random(in: 25...(UIScreen.main.bounds.width - Item.itemWidth/2))
         
-        let newItem = Item(Position:CGPoint(x:randomX,y:ItemCreatePositionY), ImageName: randomImage)
+        let newItem = Item(position:CGPoint(x:randomX,y:itemCreatePositionY), imageName: randomImage)
         GetItem.append(newItem)
     }
-    
-    private func falling() {
+    //for文でIndexをカウントする
+    private func startCountDown() {
+        for i in 0..<countDownArray.count {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i)) {
+                countDownIndex = i
+            }
+        }
+    }
+    //itemの落下&削除のロジック
+    private func fallingLogic() {
         for index in GetItem.indices.reversed() {
-            if GetItem[index].Position.y < deadLine {
+            if GetItem[index].position.y < deadLine {
+                //Item落下する処理
                 withAnimation(.linear) {
-                    GetItem[index].Position.y += 1
+                    GetItem[index].position.y += 1
                 }
             } else {
+                //配列中に入ったitemを削除
                 GetItem.remove(at: index)
             }
         }
     }
-    
+    //落下&削除ロジックを使用
     private func startFalling() {
+        //始める前に停止
         downTimer?.invalidate()
+        //0.005秒ごとにLogicを更新&当たる判定を確認する
         downTimer = Timer.scheduledTimer(withTimeInterval: 0.005, repeats: true) { _ in
-            falling()
+            fallingLogic()
             collision()
         }
     }
-    
+    //ゲーム開始したらitemの生成&落下を行う
     private func gaming() {
-        if GameStart {
+        //gameStartedがtrueになった場合
+        if gameStarted {
+            //itemの生成
             createItem()
+            //item落下開始
             startFalling()
+            //0.５秒で[itemの生成&落下]を実行
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 gaming()
             }
         }
     }
-    
+    //itemとmainObjectのぶつかる判定
     private func collision() {
+        //mainObjectのPositionとFrameを定義する
         let newMainObjectPosition = CGPoint(x: mainObPositionX.width + dragObPositionX.width, y: mainObPostionY)
         let newMainObjectFrame = CGRect( x:newMainObjectPosition.x - 30,
                                          y:newMainObjectPosition.y,
                                          width: mainObFrame,
                                          height: 1)
-        
+        //反向顺序遍历 GetItem 数组中的所有索引
         for index in GetItem.indices.reversed() {
-            let itemRect = CGRect(x: GetItem[index].Position.x - ItemWidth / 2,
-                                  y: GetItem[index].Position.y - ItemHeight / 2,
-                                  width:ItemWidth,
-                                  height:ItemHeight)
+            //itemの形を定義する
+            let itemRect = CGRect(x: GetItem[index].position.x - Item.itemWidth / 2,
+                                  y: GetItem[index].position.y - Item.itemHeight / 2,
+                                  width:Item.itemWidth,
+                                  height:Item.itemHeight)
+            //判定
             if newMainObjectFrame.intersects(itemRect) {
                 let itemName = GetItem[index]
-                if itemName.ImageName == "hamburger" {
-                    calculateBMI()
+                if itemName.imageName == "hamburger" {
+                    //振動
                     generateImpactFeedback(for: .light)
-                    realTimeWeight += 2
+                    //当たったら削除
                     GetItem.remove(at: index)
-                } else if itemName.ImageName == "vagetable" {
-                    calculateBMI()
+                } else if itemName.imageName == "vagetable" {
                     generateErrorFeedback()
-                    //野菜
-                    realTimeWeight -= 1
                     GetItem.remove(at: index)
-                } else if itemName.ImageName == "french" {
-                    calculateBMI()
+                } else if itemName.imageName == "french" {
                     generateImpactFeedback(for: .light)
-                    realTimeWeight += 1
                     GetItem.remove(at: index)
                 } else {
-                    calculateBMI()
                     generateImpactFeedback(for: .heavy)
-                    lifeCount += 1
                     GetItem.remove(at: index)
-                    GameOver()
+//                    lifeCount -= 1
+//                    gameTimer?.invalidate()
+                    gameOver()
                 }
             }
         }
     }
-    private func gameStart() {
-        buttonAnimation()
-        GestureStop = false
-        GameStart = true
-        ResetData = false
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            StartButton = false
-            //掉落逻辑
-            gaming()
-            GameTime()
-        }
-    }
-    private func GameOver() {
-        if lifeCount == 1 || GameTimeCount <= 0 {
-            calculateBMI()
-            bmiResultMessage = bmiResult()
-            GestureStop = true
-            GameTimeStop()
-            buttonPositionX = 0
-            StartButton = true
-            GameStart = false
+    //ゲーム終了時行う動作
+    private func gameOver() {
+        if gameTimeCount <= 50 {
+            //タイマーを止める
+            gameTimer?.invalidate()
+            gameOverResult = true
+            //リセットしたいデータ
+            gameStarted = false
+            downTimer?.invalidate()
             GetItem.removeAll()
-            lifeCount = 0
-            GameTimeCount = 60
-            GameOverResult = true
         }
     }
-    private func GameTime() {
-        GameTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            GameTimeCount -= 1
-            GameOver()
+    //ゲーム時間をカウントする
+    private func gameTime() {
+        gameTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+            gameTimeCount -= 1
+            gameOver()
         }
     }
-    private func GameTimeStop() {
-        GameTimer?.invalidate()
-    }
-    //結果用BMI
-    private func calculateBMI() {
-        newBMI = Double(realTimeWeight) / ((bmidata.height / 100 ) * (bmidata.height / 100))
-    }
-    //BMI公式による健康状態を表すMethod {
+    //BMI公式によって健康状態を表す
     private func bmiResult() -> String {
         if newBMI >= 40 {
            return "肥満(3度)"
@@ -326,19 +376,13 @@ struct GamingView: View {
             return "痩せすぎ"
         }
     }
-    
-    private func buttonAnimation() {
-        withAnimation(.easeOut(duration:0.5)) {
-            buttonPositionX += 300
-        }
-    }
-    //振動テスト
+    //振動処理
     func generateImpactFeedback(for style: UIImpactFeedbackGenerator.FeedbackStyle) {
         let feedbackGenerator = UIImpactFeedbackGenerator(style: style)
         feedbackGenerator.prepare()
         feedbackGenerator.impactOccurred()
     }
-    //error调用在vegetable
+    //振動処理
     func generateErrorFeedback() {
         let feedbackGenerator = UINotificationFeedbackGenerator()
         feedbackGenerator.prepare()
@@ -346,24 +390,10 @@ struct GamingView: View {
         //分别对应通知,错误和警告
         feedbackGenerator.notificationOccurred(.error)
     }
-    
-    private func startCountDown() {
-        for i in 0..<countDownArray.count {
-            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i)) {
-                countDownIndex = i
-            }
-        }
-    }
 }
-
+//カスタマカラー
 extension Color {
-    static var ruleColor:Color {
-        return Color(
-            Color(hue: 0.5, saturation: 0.3, brightness: 0.8)
-        )
-    }
-    
-    static var startColor:Color {
+    static var randomColor:Color {
         return Color(
             Color(hue: 0.6, saturation: 0.8, brightness: 0.6)
         )
