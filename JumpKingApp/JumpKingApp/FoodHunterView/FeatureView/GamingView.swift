@@ -78,39 +78,6 @@ struct GamingView: View {
 //                    .frame(width: geometry.size.width, height: geometry.size.height)
 //                    .edgesIgnoringSafeArea(.all)
 //            }
-            //体重&BMI&生命数をVStackで並んで、表示する場所を定義
-            VStack {
-                //体重を表すテキスト
-                HStack {
-                    Text("あなたの体重:")
-                    Text("\(Int(realTimeWeight))")
-                        .foregroundColor(.red)
-                    Text("KG")
-                }
-                //BMIを表すテキスト
-                HStack {
-                    Text("BMI:")
-                    Text("\(newBMI, specifier: "%.2f")")
-                        .foregroundColor(.red)
-                }
-                //生命数を表示
-                HStack {
-                    ForEach(0..<lifeCount,id: \.self) { icon in
-                        Image("bkheart")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width:20)
-                    }
-                    ForEach(lifeCount..<1,id: \.self) { icon in
-                        Image("bkheartblack")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width:20)
-                    }
-                }
-            }
-            .fontWeight(.bold)
-            .offset(y: -330)
             //カウントダウンを表示用のFlag
             if startButton {
                 Text(countDownArray[countDownIndex])
@@ -153,14 +120,52 @@ struct GamingView: View {
                     .frame(width:Item.itemWidth,height:Item.itemHeight)
                     .position(item.position)
             }
-            //ゲーム時間をゲージで表す
-            Gauge(value: gameTimeCount, in: 0...60) {
-                Text("\(Int(gameTimeCount))")
+            HStack {
+                //ゲーム時間をゲージで表す
+                Gauge(value: gameTimeCount, in: 0...60) {
+                    Text("\(Int(gameTimeCount))")
+                }
+                .gaugeStyle(.accessoryCircularCapacity)
+                .tint(Color.blue)
+                //体重&BMI&生命数をVStackで並んで、表示する場所を定義
+                VStack {
+                    //体重を表すテキスト
+                    HStack {
+                        Text("あなたの体重:")
+                        Text("\(Int(realTimeWeight))")
+                            .foregroundColor(.red)
+                        Text("KG")
+                    }
+                    //BMIを表すテキスト
+                    HStack {
+                        Text("BMI:")
+                        Text("\(newBMI, specifier: "%.2f")")
+                            .foregroundColor(.red)
+                    }
+                    //生命数を表示
+                    HStack {
+                        ForEach(0..<lifeCount,id: \.self) { icon in
+                            Image("bkheart")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width:20)
+                        }
+                        ForEach(lifeCount..<1,id: \.self) { icon in
+                            Image("bkheartblack")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width:20)
+                        }
+                    }
+                }
+                .fontWeight(.bold)
+                Text("棄権")
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(Color.blue)
+                    .cornerRadius(15)
             }
-            //円の形にする
-            .gaugeStyle(.accessoryCircularCapacity)
-            .tint(Color.blue)
-            .offset(x:-140,y:-320)
+            .offset(y: -330)
             //基本情報の画面に遷移するボタン
             if resetButton {
                 Button(action: {
