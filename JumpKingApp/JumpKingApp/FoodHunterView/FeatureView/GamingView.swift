@@ -45,7 +45,7 @@ struct GamingView: View {
     //生命数を初期化する
     @State private var totalLife:Int = 1
     //Lifeの値を初期化する
-//    @State private var lifeCount:Int = 0
+    @State private var lifeCount:Int = 1
     //trueになるとItem生成開始
     @State private var gameStarted:Bool = false
     //ゲーム時間をカウントするタイマー&ゲーム時間を60秒に初期化
@@ -94,20 +94,20 @@ struct GamingView: View {
                         .foregroundColor(.red)
                 }
                 //生命数を表示
-//                HStack {
-//                    ForEach(0..<lifeCount,id: \.self) { icon in
-//                        Image("bkheartblack")
-//                            .resizable()
-//                            .aspectRatio(contentMode: .fit)
-//                            .frame(width:20)
-//                    }
-//                    ForEach(lifeCount..<(totalLife - lifeCount),id: \.self) { icon in
-//                        Image("bkheart")
-//                            .resizable()
-//                            .aspectRatio(contentMode: .fit)
-//                            .frame(width:20)
-//                    }
-//                }
+                HStack {
+                    ForEach(0..<lifeCount,id: \.self) { icon in
+                        Image("bkheart")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width:20)
+                    }
+                    ForEach(lifeCount..<1,id: \.self) { icon in
+                        Image("bkheartblack")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width:20)
+                    }
+                }
             }
             .fontWeight(.bold)
             .offset(y: -330)
@@ -220,7 +220,7 @@ struct GamingView: View {
         startButton = true
         startCountDown()
         startGame()
-//        lifeCount = 0
+        lifeCount = 1
         mainObPositionX.width = UIScreen.main.bounds.width/2
     }
     //BMI公式
@@ -330,8 +330,7 @@ struct GamingView: View {
                 } else {
                     generateImpactFeedback(for: .heavy)
                     GetItem.remove(at: index)
-//                    lifeCount -= 1
-//                    gameTimer?.invalidate()
+                    lifeCount -= 1
                     gameOver()
                 }
             }
@@ -339,7 +338,7 @@ struct GamingView: View {
     }
     //ゲーム終了時行う動作
     private func gameOver() {
-        if gameTimeCount <= 50 {
+        if gameTimeCount <= 50 /*|| lifeCount <= 0*/ {
             //タイマーを止める
             gameTimer?.invalidate()
             gameOverResult = true
