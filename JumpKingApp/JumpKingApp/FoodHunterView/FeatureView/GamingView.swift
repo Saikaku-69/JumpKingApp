@@ -147,13 +147,13 @@ struct GamingView: View {
                     }
                     //生命数を表示
                     HStack {
-                        ForEach(0..<lifeCount,id: \.self) { icon in
+                        ForEach(0..<lifeCount,id: \.self) { _ in
                             Image("bkheart")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width:20)
                         }
-                        ForEach(lifeCount..<1,id: \.self) { icon in
+                        ForEach(lifeCount..<1,id: \.self) { _ in
                             Image("bkheartblack")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
@@ -266,7 +266,7 @@ struct GamingView: View {
         
         let newItem = Item(position:CGPoint(x:randomX,y:itemCreatePositionY), imageName: randomImage)
         GetItem.append(newItem)
-        print("append \(randomImage)")
+//        print("append \(randomImage)")
     }
     //for文でIndexをカウントする
     private func startCountDown() {
@@ -298,6 +298,7 @@ struct GamingView: View {
         downTimer = Timer.scheduledTimer(withTimeInterval: 0.005, repeats: true) { _ in
             fallingLogic()
             collision()
+            gameOver()
         }
     }
     //ゲーム開始したらitemの生成&落下を行う
@@ -344,22 +345,25 @@ struct GamingView: View {
                 } else {
                     generateImpactFeedback(for: .heavy)
                     GetItem.remove(at: index)
-//                    lifeCount -= 1
-                    gameOver()
+                    lifeCount -= 1
                 }
-                print("collision")
+//                print("collision")
             }
         }
     }
     //ゲーム終了時行う動作
     private func gameOver() {
-        if gameTimeCount <= 0 {
+        if gameTimeCount <= 0 || lifeCount <= 0 {
             //タイマーを止める
             createTimer?.invalidate()
             gameTimer?.invalidate()
             downTimer?.invalidate()
+            countDownButton = true
+            //アラートを出す
             gameOverResult = true
+            //ゲームロジックを止める
             gameStarted = false
+            //画面上のアイテムを削除
             GetItem.removeAll()
         }
     }
