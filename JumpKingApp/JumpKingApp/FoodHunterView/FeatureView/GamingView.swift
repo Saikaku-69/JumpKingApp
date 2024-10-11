@@ -330,7 +330,7 @@ struct GamingView: View {
                 } else {
                     generateImpactFeedback(for: .heavy)
                     GetItem.remove(at: index)
-                    lifeCount -= 1
+//                    lifeCount -= 1
                     gameOver()
                 }
             }
@@ -338,7 +338,7 @@ struct GamingView: View {
     }
     //ゲーム終了時行う動作
     private func gameOver() {
-        if gameTimeCount <= 50 /*|| lifeCount <= 0*/ {
+        if gameTimeCount <= 0 {
             //タイマーを止める
             gameTimer?.invalidate()
             gameOverResult = true
