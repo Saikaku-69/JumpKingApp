@@ -67,7 +67,10 @@ struct GamingView: View {
     let countDownArray = ["3","2","1"]
     //配列をカウントするために0として初期化
     @State private var countDownIndex = 0
-    
+    //
+    @State private var createTimer: Timer?
+    //
+    @State private var countDownButton:Bool = true
     var body: some View {
         ZStack {
             //GeometryReader 可以获取父视图的尺寸信息，可以根据可用空间动态调整图片的大小，使其适应不同尺寸的设备。
@@ -159,23 +162,18 @@ struct GamingView: View {
                     }
                 }
                 .fontWeight(.bold)
-                Text("棄権")
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(Color.blue)
-                    .cornerRadius(15)
+                Button(action: {
+                    stopGame()
+                }) {
+                    Text("棄権")
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.blue)
+                        .cornerRadius(15)
+                }
+                .disabled(countDownButton)
             }
             .offset(y: -330)
-            //基本情報の画面に遷移するボタン
-            if resetButton {
-                Button(action: {
-                    moveToInfoView = true
-                }) {
-                    Image(systemName:"arrow.circlepath")
-                }
-                .font(.system(size:30))
-                .offset(x:140,y:-320)
-            }
         }
         //設備の大きさにより変化
         .frame(maxWidth: .infinity,maxHeight: .infinity)
@@ -190,7 +188,7 @@ struct GamingView: View {
             //入力した体重の値をrealTimeWeight変数に代入
             realTimeWeight = bmiData.weight
             //mainObjectのポジションを真ん中に初期化
-            mainObPositionX.width += screenHeight / 4 - mainObFrame / 2
+            mainObPositionX.width = UIScreen.main.bounds.width/2
             //入力したデータで計算BMIを計算する
             calculateBMI()
             //ゲームが始めるための準備
@@ -201,6 +199,7 @@ struct GamingView: View {
         //画面が消える時に行う処理
         .onDisappear {
             //全てのタイマーを停止
+            createTimer?.invalidate()
             downTimer?.invalidate()
             gameTimer?.invalidate()
         }
@@ -218,8 +217,19 @@ struct GamingView: View {
             PlayerInfoView()
         }
     }
+    private func stopGame() {
+        createTimer?.invalidate()
+        downTimer?.invalidate()
+        gameTimer?.invalidate()
+        GetItem.removeAll()
+        gameTimeCount = 60
+        countDownIndex = 0
+        lifeCount = 1
+        mainObPositionX.width = UIScreen.main.bounds.width/2
+        moveToInfoView = true
+    }
     private func initialGame() {
-        //リット
+        //リットするデータ
         gameTimeCount = 60
         countDownIndex = 0
         startButton = true
@@ -256,6 +266,7 @@ struct GamingView: View {
         
         let newItem = Item(position:CGPoint(x:randomX,y:itemCreatePositionY), imageName: randomImage)
         GetItem.append(newItem)
+        print("append \(randomImage)")
     }
     //for文でIndexをカウントする
     private func startCountDown() {
@@ -293,13 +304,11 @@ struct GamingView: View {
     private func gaming() {
         //gameStartedがtrueになった場合
         if gameStarted {
-            //itemの生成
-            createItem()
-            //item落下開始
-            startFalling()
+            countDownButton = false
             //0.５秒で[itemの生成&落下]を実行
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                gaming()
+            createTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
+                createItem()
+                startFalling()
             }
         }
     }
@@ -338,6 +347,7 @@ struct GamingView: View {
 //                    lifeCount -= 1
                     gameOver()
                 }
+                print("collision")
             }
         }
     }
@@ -345,11 +355,11 @@ struct GamingView: View {
     private func gameOver() {
         if gameTimeCount <= 0 {
             //タイマーを止める
+            createTimer?.invalidate()
             gameTimer?.invalidate()
-            gameOverResult = true
-            //リセットしたいデータ
-            gameStarted = false
             downTimer?.invalidate()
+            gameOverResult = true
+            gameStarted = false
             GetItem.removeAll()
         }
     }
