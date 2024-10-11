@@ -37,7 +37,6 @@ struct GamingView: View {
     
     @State private var lifeCount:Int = 0
     @State private var GameStart:Bool = false
-    @State private var showRuleSheet:Bool = false
     
     //ゲーム時間タイマー
     @State private var GameTimer: Timer?
@@ -53,10 +52,8 @@ struct GamingView: View {
     @State private var moveToInfoView:Bool = false
     @State private var bmiResultMessage = ""
     
-//    let countDownTime = ["3","2","1"]
-//    @State private var countDownIndex = 0
-//    @State private var countTimeSize: CGFloat = 50
-//    @State private var textVisible:Bool = true
+    let countDownArray = ["3","2","1"]
+    @State private var countDownIndex = 0
     
     var body: some View {
         ZStack {
@@ -76,8 +73,6 @@ struct GamingView: View {
                 }
                 HStack {
                     Text("BMI:")
-//                    Text("\(bmidata.bmi, specifier: "%.2f")")
-//                        .foregroundColor(.red)
                     Text("\(newBMI, specifier: "%.2f")")
                         .foregroundColor(.red)
                 }
@@ -100,46 +95,10 @@ struct GamingView: View {
             .fontWeight(.bold)
             .offset(y: -330)
             //倒数之后开始生成item
-//            if textVisible {
-//                Text(countDownTime[countDownIndex])
-//                    .font(.system(size: countTimeSize))
-//            }
             if StartButton {
-                VStack {
-                    //rule
-                    Button(action: {
-                        showRuleSheet = true
-                    }) {
-                        Text("ルール紹介")
-                    }
-                    .padding()
-                    .background(Color.ruleColor)
-                    .cornerRadius(15)
-                    .offset(x:buttonPositionX)
-                    
-                    Button(action: {
-                        buttonAnimation()
-                        GestureStop = false
-                        GameStart = true
-                        ResetData = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                            StartButton = false
-                            //掉落逻辑
-                            gaming()
-                            GameTime()
-                        }
-                    }) {
-                        Text("ゲーム開始")
-                    }
-                    .padding()
-                    .background(Color.startColor)
-                    .cornerRadius(15)
-                    .offset(x:-buttonPositionX)
-                    
-//                    Image(systemName:"align.vertical.bottom")
-//                        .foregroundColor(.blue)
-                }
-                .foregroundColor(.white)
+                    Text(countDownArray[countDownIndex])
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
             }
             ZStack {
                 Image("ManChar")
@@ -152,7 +111,7 @@ struct GamingView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: mainObFrame)
                     .position(x: mainObPositionX.width + dragObPositionX.width,y: mainObPostionY)
-                    .opacity(0)
+                    .opacity(1.0)
             }
             .gesture(
                 DragGesture()
@@ -196,45 +155,31 @@ struct GamingView: View {
         .frame(maxHeight: .infinity)
         .edgesIgnoringSafeArea(.all)
         .onAppear() {
-//            startCountDown()
             screenHeight = UIScreen.main.bounds.height
             deadLine = screenHeight
-            mainObPositionX.width += screenHeight / 4 - mainObFrame / 2
-            
             realTimeWeight = bmidata.weight
+            //
+            mainObPositionX.width += screenHeight / 4 - mainObFrame / 2
             calculateBMI()
-            
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-////                buttonAnimation()
-//                GestureStop = false
-//                GameStart = true
-//                ResetData = false
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-//                    StartButton = false
-//                    //掉落逻辑
-//                    gaming()
-//                    GameTime()
-//                }
-//            }
+            gameStart()
+            startCountDown()
         }
         .onDisappear {
             downTimer?.invalidate()
             GameTimer?.invalidate()
-        }
-        .sheet(isPresented: $showRuleSheet) {
-            GameRuleView()
-                .presentationDetents([.fraction(0.5)])
         }
         .alert(isPresented: $GameOverResult) {
             Alert(title: Text("ゲーム終了"),
                   message: Text(""),
                   primaryButton: .default(Text("OK")) {
                 ResetData = true
-                mainObPositionX.width = screenHeight / 4 - mainObFrame / 6
-//                textVisible = true
-//                startCountDown()
+//                mainObPositionX.width = screenHeight / 4 - mainObFrame / 6
+                countDownIndex = 0
+                gameStart()
+                startCountDown()
             },
                   secondaryButton: .default(Text("もっとみる")) {
+                moveToInfoView = true
             })
         }
         .fullScreenCover(isPresented: $moveToInfoView) {
@@ -321,7 +266,18 @@ struct GamingView: View {
             }
         }
     }
-    
+    private func gameStart() {
+        buttonAnimation()
+        GestureStop = false
+        GameStart = true
+        ResetData = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            StartButton = false
+            //掉落逻辑
+            gaming()
+            GameTime()
+        }
+    }
     private func GameOver() {
         if lifeCount == 1 || GameTimeCount <= 0 {
             calculateBMI()
@@ -335,7 +291,6 @@ struct GamingView: View {
             lifeCount = 0
             GameTimeCount = 60
             GameOverResult = true
-//            countDownIndex = 0
         }
     }
     private func GameTime() {
@@ -392,29 +347,13 @@ struct GamingView: View {
         feedbackGenerator.notificationOccurred(.error)
     }
     
-//    private func startCountDown() {
-//        for i in 0..<countDownTime.count {
-//            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i)) {
-//                    countDownIndex = i
-////                    countTimeSizeAction()
-//                if countDownIndex == countDownTime.count - 1 {
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-//                        textVisible = false
-//                    }
-//                }
-//            }
-//        }
-//    }
-    
-//    private func countTimeSizeAction() {
-//            withAnimation(.linear(duration: 1)) {
-//                countTimeSize -= 50
-//            }
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-//                countTimeSize = 50
-//                countTimeSizeAction()
-//            }
-//    }
+    private func startCountDown() {
+        for i in 0..<countDownArray.count {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i)) {
+                countDownIndex = i
+            }
+        }
+    }
 }
 
 extension Color {
