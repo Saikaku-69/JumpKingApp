@@ -74,7 +74,7 @@ struct GamingView: View {
     @State private var countDownButton:Bool = true
     var body: some View {
         ZStack {
-            //GeometryReader 可以获取父视图的尺寸信息，可以根据可用空间动态调整图片的大小，使其适应不同尺寸的设备。
+//            //可以获取父视图的尺寸信息，可以根据可用空间动态调整图片的大小，使其适应不同尺寸的设备。
 //            GeometryReader { geometry in
 //                Image("bkbg1")
 //                    .resizable()
@@ -287,9 +287,9 @@ struct GamingView: View {
                 }
             } else {
                 //配列中に入ったitemを削除
-//                GetItem.remove(at: index)
-                GetItem[index].isFallen = true
-                GetItem[index].position.y = deadLine
+                GetItem.remove(at: index)
+//                GetItem[index].isFallen = true
+//                GetItem[index].position.y = deadLine
             }
         }
     }
