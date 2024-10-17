@@ -13,6 +13,7 @@ struct Item: Identifiable {
     var id = UUID()
     var position: CGPoint
     var imageName: String
+    var isFallen: Bool = false
     
     //Itemの大きさを定義する
     static let itemWidth: CGFloat = 30
@@ -73,7 +74,7 @@ struct GamingView: View {
     @State private var countDownButton:Bool = true
     var body: some View {
         ZStack {
-            //GeometryReader 可以获取父视图的尺寸信息，可以根据可用空间动态调整图片的大小，使其适应不同尺寸的设备。
+//            //可以获取父视图的尺寸信息，可以根据可用空间动态调整图片的大小，使其适应不同尺寸的设备。
 //            GeometryReader { geometry in
 //                Image("bkbg1")
 //                    .resizable()
@@ -123,57 +124,57 @@ struct GamingView: View {
                     .frame(width:Item.itemWidth,height:Item.itemHeight)
                     .position(item.position)
             }
-            HStack {
-                //ゲーム時間をゲージで表す
-                Gauge(value: gameTimeCount, in: 0...60) {
-                    Text("\(Int(gameTimeCount))")
-                }
-                .gaugeStyle(.accessoryCircularCapacity)
-                .tint(Color.blue)
-                //体重&BMI&生命数をVStackで並んで、表示する場所を定義
-                VStack {
-                    //体重を表すテキスト
-                    HStack {
-                        Text("あなたの体重:")
-                        Text("\(Int(realTimeWeight))")
-                            .foregroundColor(.red)
-                        Text("KG")
-                    }
-                    //BMIを表すテキスト
-                    HStack {
-                        Text("BMI:")
-                        Text("\(newBMI, specifier: "%.2f")")
-                            .foregroundColor(.red)
-                    }
-                    //生命数を表示
-                    HStack {
-                        ForEach(0..<lifeCount,id: \.self) { _ in
-                            Image("bkheart")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width:20)
-                        }
-                        ForEach(lifeCount..<1,id: \.self) { _ in
-                            Image("bkheartblack")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width:20)
-                        }
-                    }
-                }
-                .fontWeight(.bold)
-                Button(action: {
-                    stopGame()
-                }) {
-                    Text("棄権")
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(Color.blue)
-                        .cornerRadius(15)
-                }
-                .disabled(countDownButton)
-            }
-            .offset(y: -330)
+//            HStack {
+//                //ゲーム時間をゲージで表す
+//                Gauge(value: gameTimeCount, in: 0...60) {
+//                    Text("\(Int(gameTimeCount))")
+//                }
+//                .gaugeStyle(.accessoryCircularCapacity)
+//                .tint(Color.blue)
+//                //体重&BMI&生命数をVStackで並んで、表示する場所を定義
+//                VStack {
+//                    //体重を表すテキスト
+//                    HStack {
+//                        Text("あなたの体重:")
+//                        Text("\(Int(realTimeWeight))")
+//                            .foregroundColor(.red)
+//                        Text("KG")
+//                    }
+//                    //BMIを表すテキスト
+//                    HStack {
+//                        Text("BMI:")
+//                        Text("\(newBMI, specifier: "%.2f")")
+//                            .foregroundColor(.red)
+//                    }
+//                    //生命数を表示
+//                    HStack {
+//                        ForEach(0..<lifeCount,id: \.self) { _ in
+//                            Image("bkheart")
+//                                .resizable()
+//                                .aspectRatio(contentMode: .fit)
+//                                .frame(width:20)
+//                        }
+//                        ForEach(lifeCount..<1,id: \.self) { _ in
+//                            Image("bkheartblack")
+//                                .resizable()
+//                                .aspectRatio(contentMode: .fit)
+//                                .frame(width:20)
+//                        }
+//                    }
+//                }
+//                .fontWeight(.bold)
+//                Button(action: {
+//                    stopGame()
+//                }) {
+//                    Text("棄権")
+//                        .foregroundColor(.white)
+//                        .padding()
+//                        .background(Color.blue)
+//                        .cornerRadius(15)
+//                }
+//                .disabled(countDownButton)
+//            }
+//            .offset(y: -330)
         }
         //設備の大きさにより変化
         .frame(maxWidth: .infinity,maxHeight: .infinity)
@@ -260,7 +261,7 @@ struct GamingView: View {
     //itemで生成する画像をランダムで代入、ポジションXの範囲を定義
     //GetItem構造体を使ったnewItemとして生成する
     private func createItem() {
-        let images = ["hamburger", "poo", "vagetable","french"]
+        let images = ["hamburger"]
         let randomImage = images.randomElement() ?? "hamburger"
         let randomX = CGFloat.random(in: 25...(UIScreen.main.bounds.width - Item.itemWidth/2))
         
@@ -287,6 +288,8 @@ struct GamingView: View {
             } else {
                 //配列中に入ったitemを削除
                 GetItem.remove(at: index)
+//                GetItem[index].isFallen = true
+//                GetItem[index].position.y = deadLine
             }
         }
     }
@@ -298,7 +301,7 @@ struct GamingView: View {
         downTimer = Timer.scheduledTimer(withTimeInterval: 0.005, repeats: true) { _ in
             fallingLogic()
             collision()
-            gameOver()
+//            gameOver()
         }
     }
     //ゲーム開始したらitemの生成&落下を行う
@@ -371,7 +374,6 @@ struct GamingView: View {
     private func gameTime() {
         gameTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             gameTimeCount -= 1
-            gameOver()
         }
     }
     //BMI公式によって健康状態を表す
